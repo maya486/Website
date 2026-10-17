@@ -4,22 +4,82 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parse Integers · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Personal Projects / Highload Challenges / Parse Integers</span>
     </div>
     <main id="content">
       <h1>Parse Integers</h1>
-      <p class="placeholder">Nothing here yet.</p>
+
+      <h2>The Challenge</h2>
+      <p><a href="https://highload.fun/challenges/compute/parse_integers/solve/CPP">The challenge</a> is to compute the sum of 50,000,000 integers from the range [0, 2147483647] as fast as possible. The input is given through stdin where each integer is written as text on a separate line.</p>
+
+      <h2>The Solution</h2>
+
+      <h3>Solution Overview</h3>
+      <p>This was the first Highload challenge I did so I wanted to get a taste of the types of algorithms and strategies used for this type of problem. Then the following challenges, I would do completely on my own. I read over <a href="https://blog.mattstuchlik.com/2024/07/12/summing-integers-fast.html">Matt Stuchlik&rsquo;s solution</a> which well documents his strategy.</p>
+      <p>Essentially the algorithm processes 32 bytes of the input at a time starting from the end in reverse after initially mmaping all the data. For brevity and explanation purposes, though, I will only demonstrate the algorithm as if it operated on 16 byte chunks at a time and the 32 byte version is left as an exercise to the reader.</p>
+      <p>The 16 byte chunk read will look something like this:</p>
+<pre><code>{'1', '6', '4', '8', '2', '\n', '5', '4', '\n', '9', '8', '9', '9', '4', '5', '2'}</code></pre>
+      <p>The goal is to fully process all the information in each chunk and update an accumulator every iteration. The middle number, 54, can easily be processed and directly added to the accumulator because the full number is known. For the 16 and the 9899452, though, it isn&rsquo;t known whether these digits make up a full number or if the rest has been cut off.</p>
+      <p>9899452 can be handled by the fact that the input is traversed in reverse and the 16 bytes that come after the number have already been read. Hence, the length of the number&rsquo;s suffix is already known from the last iteration. Suppose the suffix is 2 then 989945200 can be added to the accumulator. Next, to process 16482, the new suffix sum is updated to 5 and 16482 is added to the accumulator. The rest of the number (if there is a rest) will be processed separately when the next 16 bytes are read.</p>
+      <p>This 16 byte chunked traversal of the input is the basic structure of the algorithm, but the whole process of going from</p>
+<pre><code>input:  {suffix_len: 2, input: {'1', '6', '4', '8', '2', '\n', '5', '4', '\n', '9', '8', '9', '9', '4', '5', '2'}}
+
+output: {suffix_len: 5, add 16482 + 54 + 989945200 = 989961736 to accumulator}</code></pre>
+      <p>is where all the complexity of the algorithm lies.</p>
+
+      <h3>Inside the Hot Loop</h3>
+      <p>The first step is to subtract a vector of all &lsquo;0&rsquo;s from the data vector to get the numerical values of the digits in the vector instead of the ascii version.</p>
+<pre><code>data initially:         {'1', '6', '4', '8', '2', '\n', '5', '4', '\n', '9', '8', '9', '9', '4', '5', '2'}
+data after subtraction: { 1,   6,   4,   8,   2,   218,  5,   4,   218,  9,   8,   9,   9,   4,   5,   2 }</code></pre>
+      <p>Next is where things get a bit tricky... The goal is to be able to use the location of the newlines to determine the place value of every digit and then use that to update an accumulator in only a few instructions. It is important not to think about the data as 3 numbers or partial numbers anymore, but as a vector of digits with various place values attached to them.</p>
+      <p>The way Stuchlik accomplishes this is by having an accumulator vector where each of the 8 bit lanes represents the ongoing sum of digits for a particular digits place. The layout of the accumulator is:</p>
+<pre><code>{_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _}
+ 5  4  3  2  1  0  9  8  7  6  5  4  3  2  1  0</code></pre>
+      <p>For example, if the number 345 is parsed then 3 will be added to either the 4th or 14th lane, 4 added to the 5th or 15th lane and 5 added to 6th or 16th lane. The reason for this particular layout of 5-0 and then 9-0 is that an input number has at most 10 digits so 9-0 must be there and the remaining 6 lanes should go to lesser place values because lesser place values are more frequent.</p>
+      <p>A careful reader might notice that it is not guaranteed that a 16 byte chunk only contains 2 units digits and that is true! But this is an algorithm that is correct with high probability rather than a 100% correct algorithm and the solution is very unlikely (especially in the 32 bytes version) to break given the problem spec and highload&rsquo;s input generator.</p>
+      <p>Now that an accumulator vector is defined, what remains is efficiently assigning each digit in the input a correct slot in the accumulator. In other words, the input data needs to be shuffled to match the accumulator&rsquo;s format (with zeros for the empty slots) such that the digits match the place value slots. Then the shuffled data can simply be added to the existing accumulator vector.</p>
+<pre><code>data:                                         {1, 6, 4, 8, 2, 218, 5, 4, 218, 9, 8, 9, 9, 4, 5, 2}
+
+desired shuffled data for accumulator format: {_, 1, 6, 4, 8,  2,  _, 9,  8,  9, 9, 4, 5, 2, 5, 4}
+                                               5  4  3  2  1   0   9  8   7   6  5  4  3  2  1  0</code></pre>
+      <p>The way a particular input needs to be shuffled is solely determined by the locations of the new lines and the suffix_len. In order to save the work of manually calculating this shuffle every iteration, the mask and suffix_len are used to index into a lookup table where each element is a shuffle mask.</p>
+<pre><code>data:                             {  1,   6,  4,  8,  2, 218,    5,  4, 218,  9,  8,  9,  9,  4,  5,  2 }
+shuffle mask:                     { 0x80, 0,  1,  2,  3,  4,   0x80, 9, 10,  11, 12, 13, 14, 15, 6,  7 }
+data after applying shuffle mask: {  0,   1,  6,  4,  8,  2,    0,   9,  8,   9,  9,  4,  5,  2,  5,  4 }</code></pre>
+      <p>Ok, so from start to finish data is read in sequential chunks, processed and used to get a shuffle mask from the lookup table and then reformatted and added to the accumulator vector. Beyond that, the accumulator just needs to be periodically flushed to the final uint64 sum where each lane is multiplied by the appropriate power of ten and summed up to avoid overflow.</p>
+      <p>One key piece that remains, though, is explaining how to implement the lookup table.</p>
+
+      <h3>The Lookup Table</h3>
+      <p>Stuchlik coyly kept his lookup table implementation secret (I respect the game) which is especially important because the lookup table is a HUGE bottleneck. You are randomly indexing into a ginormous table every iteration. The 32 byte algorithm requires 64 bytes per element which results in a total size of 64 bytes * 2^32 masks * 11 suffix_lens = 3TB!</p>
+      <p>What can be done to address this? I tried many things that didn&rsquo;t work or I couldn&rsquo;t get to work efficiently</p>
+      <ul>
+        <li>generating the lookup table up front</li>
+        <li>precomputing the lookup table in another script, dumping the output to a file, and loading it in the main file</li>
+        <li>looking up only 16 bytes of the mask at a time (cuts down table size)</li>
+        <li>compressing the table to only contain elements for valid masks</li>
+      </ul>
+      <p>The strategy that finally got me decent performance was to do lazy page generation using a SIGSEGV handler, but prepopulating the top ~400 pages at program start.</p>
+      <p>Instead of populating the entire lookup table up front, lazy generation takes advantage of the fact that the table is very sparsely populated. Only a subset of masks are valid (no consecutive new lines for example) and even fewer occur frequently.</p>
+      <p>In the beginning, the 3TBs of virtual memory are reserved but only the popular pages are populated. When the hot loop hits a mask + suffix_len combination whose shuffle mask lives on a page of the lookup table that hasn&rsquo;t been populated yet, a SIGSEGV handler catches the page fault and quickly generates the 64 elements for that page only.</p>
+      <p>This takes advantage of spatial locality when generating a whole page of elements for one fault&ndash;popular masks are likely to be near other popular masks&ndash;and temporal locality&ndash;the same handful of masks tend to repeat throughout the input.</p>
+
+      <h3>Other Optimizations</h3>
+      <p>There were a few more microoptimizations that gave decent performance boosts. Widening the accumulator from 8 bit to 16 bit before flushing to the final uint64 sum cut back on the frequency of flushing to uint64 which has to extract each element from the vector sequentially. Having multiple walkers process chunks simultaneously and unrolling the hot loop by a factor of 2 also helped bump ILP. Lastly, huge pages on the lookup table also helped reduce TLB pressure.</p>
+
+      <h2>Results and Thoughts</h2>
+      <p>At the time of when I submitted my final solution I was 15th on the leaderboard with a score of 5259 which I think is not too bad, especially given the caliber of people on the site.</p>
+      <p>In terms of what I enjoyed doing this challenge, I found the data shuffling and the accumulator layout and strategy to be very interesting. I also liked coming up with my implementation of the lookup table and am still curious as to what Stuchlik&rsquo;s design was that he hinted at. Even beyond that, though, there are clearly <a href="https://highload.fun/articles/parse-integers-task-memory-access-pattern/detail">other faster algorithms</a> which involve processing numbers 3 at a time with unaligned loads which is intriguing. Overall, lots of fun with the SIMD and creative algorithms.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

@@ -4,22 +4,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Highload Challenges · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Personal Projects / Highload Challenges</span>
     </div>
     <main id="content">
       <h1>Highload Challenges</h1>
-      <p class="placeholder">Nothing here yet.</p>
+      <p><a href="https://highload.fun/home">Highload</a> is a site that hosts performance engineering challenges. The problem formats usually look like: ingest a huge amount of data and efficiently output a simple characteristic of the data like the median or the sum, though there are more complicated challenges too. There are many programming languages supported like C++, ZIG, and Rust and all the code is run on a Xeon E3-1271 v3 (which means AVX2 for the SIMD). When a solution is submitted, it is run 9 times and the median runtime/score is taken. It is then put on a public, ongoing leaderboard.</p>
+      <p>I did some of these challenges to get more comfortable with performance engineering and I would highly recommend them to other people as well. Some challenges offer a lot of creative exploration into different types of algorithms and implementations of things like hashing and a lookup table. Others are pretty simple and instead really focus on parallelization and ILP of a simple hot loop. The standardized solution checking and performance measurement makes the iteration process pretty smooth. I also think it is nice that there is a whole community of people who enjoy doing these challenges and you get to see truly how fast some people&rsquo;s solutions are.</p>
+      <p>My overall goals were to get much more comfortable using SIMD, coming up with good algorithms, and performance analysis tools like perf as well as of course getting on the leaderboard. My target was to break into the top 20 for each challenge and at the time of my final submission I had accomplished that!</p>
+      <p>You can check out the following challenges that I have written up my solution to:</p>
+      <ul>
+        <li><a href="parse-integers.html">Parse Integers</a></li>
+        <li><a href="median.html">Median</a></li>
+        <li><a href="count-uint8s.html">Count Uint8s</a></li>
+        <li>Unique Strings (coming soon)</li>
+      </ul>
+
+      <h2>Notes</h2>
+      <p>One thing to be aware of though is that the leaderboard is ongoing and so I report my score and place on the leaderboard as my ranking at the time of my final submission, but this is subject to change if someone in the future beats my score and I get knocked down. Further, with a recent addition to Highload being that someone can challenge your solution with a custom input generator, many probabilistic solutions have been broken that previously worked very well on the given input generator:</p>
+      <figure class="shot">
+        <a href="../assets/img/challenged-solutions.png"><img src="../assets/img/challenged-solutions.png" alt="A feed of Highload solutions marked Solution Broken after being challenged with custom input generators"></a>
+      </figure>
+      <p>I think this is a bit sad, especially because having a probabilistic algorithm was the main solution to many of the problems, but oh well I did it for learning purposes and I had a good time lol.</p>
+      <p>One more thing to keep in mind is that Highload doesn&rsquo;t allow solution sharing in its <a href="https://highload.fun/rules">rules</a> which is why I don&rsquo;t link my code. I was, however, initially worried about whether it would be allowed for me to describe my algorithm in these writeups, but I have reasoned that it is okay. Firstly, because <a href="https://blog.mattstuchlik.com/">Matt Stuchlik</a> already did so twice and secondly because I searched through the Highload telegram chat for any discussion on this and from the maintainer of the Highload Sergey Svistunov himself on whether someone is allowed to share details of their solutions: &ldquo;You can, but everybody can use it to beat you :)&rdquo;.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

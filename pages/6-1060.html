@@ -4,22 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>6.1060 · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Cool Work at MIT / 6.1060</span>
     </div>
     <main id="content">
       <h1>6.1060</h1>
-      <p class="placeholder">Nothing here yet.</p>
+      <p>6.1060 is a very demanding but very rewarding class that teaches efficient asymptotic and cache-aware algorithms, parallel programming (specifically OpenCilk), bit-level optimizations, and how to use tools like perf and valgrind. It covers both a theoretical understanding of algorithms and performance engineering as well as gives students free reign to try any optimization they can think of on large projects. A small subset of the optimizations I used in the class are</p>
+      <ul>
+        <li>restructuring an algorithm to easily filter out useless work that would be overwritten anyway</li>
+        <li>breaking a triangular iteration space for pairwise data updates into smaller triangles and squares recursively for parallel processing</li>
+        <li>reducing memory allocation by keeping persistent state to cut back on malloc and free calls</li>
+        <li>doing some precomputation on data to provide a fastpath later on</li>
+        <li>packing metadata efficiently where certain bits either hold object data or extra metadata depending on object state</li>
+        <li>using bit hacks for endianness</li>
+        <li>using size based-bins for efficient search</li>
+      </ul>
+      <p>Overall, I would highly recommend. Here&rsquo;s some <a href="https://www.youtube.com/playlist?list=PLUl4u3cNGP63VIBQVWguXxZZi0566y7Wf">youtube videos of the lectures</a> and you can probably find other course materials online as well.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

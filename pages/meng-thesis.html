@@ -4,22 +4,126 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MEng Thesis · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Cool Work at MIT / MEng Thesis</span>
     </div>
     <main id="content">
       <h1>MEng Thesis</h1>
-      <p class="placeholder">Nothing here yet.</p>
+      <p>With supervisors MIT professor Martin Rinard and researcher Jeff Perkins I worked on a project, Tenjin, that automatically turns unsafe C&ndash;with all sorts of hacky, dangerous memory patterns that are hard to reason about for code safety&ndash;into safe idiomatic Rust. Rust&rsquo;s memory model is much stricter than C&rsquo;s, in particular, there are no pointers which limits the chance of vulnerabilities or bugs. Rust still offers good speed, though, that other safer languages don&rsquo;t.</p>
+      <p>To make this automated translation to Rust easier, the C source code is first refactored into cleaner C beforehand in a phase called preparatory refactoring. I contributed 2 C-to-C passes to this phase that each addressed a specific C memory pattern that isn&rsquo;t directly compatible with idiomatic Rust.</p>
+      <p>The first pass converts hacky bit reinterpretation from type to type using union fields (called union punning) into an encapsulated method that uses memcpy. This new method is only temporary, though, and is translated later in the Tenjin process to use Rust&rsquo;s to_bits and from_bits methods.</p>
+      <figure>
+        <figcaption>Before pass</figcaption>
+<pre><code>uint32_t test(float flt) {
+    union {
+        float flt;
+        uint32_t num;
+    } in;
+    if (flt &gt; 2) {
+        in.flt = flt + 2;
+    } else {
+        in.flt = flt * 2;
+    }
+    if (flt &gt; 10) {
+        return in.num - 9;
+    } else {
+        return in.num * 10;
+    }
+}</code></pre>
+      </figure>
+      <figure>
+        <figcaption>After pass</figcaption>
+<pre><code>void *memcpy(void *dest, const void *src, unsigned long n);
+...
+static void __tenjin_1890_5_float_to_uint32_t(float x, uint32_t *out) {
+    memcpy(out, &amp;x, 4);
+}</code></pre>
+      </figure>
+      <p>The second pass is more expansive and targets pointers that represent arrays, including iterating and modifying the array contents via a pointer. The pass aims to replace this behavior using explicit array index variables as well as create a Rust Slice equivalent for describing subarrays using a struct with a base array pointer and a length. This transformation is done within and across functions.</p>
+      <p>Below is an example transformation of a quicksort implementation that shows how the code is refactored to match the Rust Slice structure across multiple functions. Note that the transformed code only keeps the base array variable arr as a raw pointer and everything else is now in the Rust Slice struct using array indexing and the length attribute. Data is only read and written through index operations.</p>
+      <figure>
+        <figcaption>Before pass</figcaption>
+<pre><code>void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int *partition(int *lo, int *hi) {
+    int pivot = *hi;
+    int *i = lo;
+    for (int *j = lo; j &lt; hi; j++) {
+        if (*j &lt; pivot) {
+            swap(i, j);
+            i++;
+        }
+    }
+    swap(i, hi);
+    return i;
+}
+
+void quick_sort(int *lo, int *hi) {
+    if (lo &lt; hi) {
+        int *p = partition(lo, hi);
+        quick_sort(lo, p - 1);
+        quick_sort(p + 1, hi);
+    }
+}
+
+void sort(int *arr, int n) {
+    quick_sort(arr, arr + n - 1);
+}</code></pre>
+      </figure>
+      <figure>
+        <figcaption>After pass</figcaption>
+<pre><code>typedef struct { int *ptr; size_t len; } RustSlice_int;
+
+void swap(RustSlice_int arr, int a, int b) {
+    int t = arr.ptr[a];
+    arr.ptr[a] = arr.ptr[b];
+    arr.ptr[b] = t;
+}
+
+int partition(RustSlice_int arr) {
+    int pivot = arr.ptr[(arr.len - 1)];
+    int i_index = 0;
+    for (int j_index = 0; j_index &lt; arr.len - 1; j_index++) {
+        if (arr.ptr[j_index] &lt; pivot) {
+            swap(arr, i_index, j_index);
+            i_index++;
+        }
+    }
+    swap(arr, i_index, arr.len - 1);
+    return i_index;
+}
+
+void quick_sort(RustSlice_int arr) {
+    if (arr.len &gt; 1) {
+        int p = partition(arr);
+        quick_sort((RustSlice_int){ arr.ptr, p });
+        quick_sort((RustSlice_int){ arr.ptr + p + 1, arr.len - (p + 1) });
+    }
+}
+
+void sort(int *arr, int n) {
+    quick_sort((RustSlice_int){ arr, n });
+}</code></pre>
+      </figure>
+      <p>In order to implement these passes I did the static analysis and source code rewrite through clang which has solid CFG, domination, and AST visitor support. Going deeper to LLVM would have provided better analysis, but is too far beyond the original textual source code to easily rewrite it. The clang AST provides source locations in the file as well as nice insert, delete, and replace methods for nodes, though makes it harder to navigate the code as all the code is represented as in a very verbose tree structure.</p>
+      <p>The static analysis in the union bit reinterpretation pass includes domination analysis ensuring that all of the source union fields dominate all the destination field reads to prevent undefined memory problems. For the pointer pass an example of the static analysis done is that every type of pointer usage in the AST (e.g. p+=n, *++p, p == NULL) is classified into one of 30+ cases. This information is then used to infer the overall usage pattern of a given pointer in a method in order to check whether it is a candidate for explicit array indexing as well as to correctly transform the source into the explicit array indexing equivalent (e.g. p_index+=n, buf[++p_index], p_index == -1).</p>
+      <p>My 2 passes were successfully tested on the internal Tenjin testing suite as well as on a handful of public C repos to verify correctness. The union bit reinterpretation pass successfully transformed 86% (1633/1899) of all candidate unions and the pointer pass transformed 98.6% (3672/3725) of candidate pointers found in the public repos.</p>
+      <!-- TODO: replace href="#" with the link to the thesis PDF -->
+      <p>Here&rsquo;s the full thesis (<a href="#">link</a>).</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

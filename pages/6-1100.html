@@ -4,22 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>6.1100 · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Cool Work at MIT / 6.1100</span>
     </div>
     <main id="content">
       <h1>6.1100</h1>
-      <p class="placeholder">Nothing here yet.</p>
+      <p>This class taught compilers from top to bottom. The semester long group project was to build a compiler from scratch on a simple C-like language called <a href="https://6110-sp24.github.io/decaf-spec">Decaf</a>. This included</p>
+      <ul>
+        <li>scanning and parsing the grammar of a language</li>
+        <li>building the IR and AST, performing semantic checking</li>
+        <li>generating the CFG</li>
+        <li>doing various optimizations on the CFG (CSE, DCE)</li>
+        <li>outputting x86-64 asm that correctly interacts the stack, allocates and uses registers, and follows the calling convention</li>
+      </ul>
+      <p>The subject material was not only very interesting but also helpful beyond wanting to build a compiler. Getting familiar with the CFG and dominator trees set me up for my <a href="meng-thesis.html">MEng thesis</a> which included a lot of static analysis on source code. Further, generating assembly and understanding how compiler optimizations work is important for performance engineering when making sure that the outputted machine code matches my mental model of how the code executes.</p>
+      <!-- TODO: replace href="#" with the link to the group's final design document -->
+      <p>Overall provides a lot of necessary fundamentals to understanding how code is executed. Here is the <a href="https://6110-sp24.github.io/syllabus">old website</a> from Spring 2024 when I took it and my group&rsquo;s <a href="#">final design document</a> for more information on the implementation.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

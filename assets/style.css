@@ -6,7 +6,7 @@
   --border: #e3dfd6;
   --sidebar-w: 360px;
   --col-w: 96px;
-  --leaf-h: 48px;
+  --leaf-h: 52px;   /* height of one weight unit */
   --gap: 3px;
   --flame-text: #000;
 }
@@ -35,6 +35,7 @@ a { color: #b8321f; }
   height: 100vh;
 }
 body.sidebar-closed #sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
+body.preload #sidebar, body.preload #topbar { transition: none; }
 
 #main { flex: 1 1 auto; min-width: 0; }
 #topbar {
@@ -46,7 +47,17 @@ body.sidebar-closed #sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
   background: #fff;
   position: sticky; top: 0; z-index: 5;
 }
-#topbar .crumb { color: var(--muted); font-size: 14px; }
+#topbar .crumb { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
+#topbar .crumb-sep { color: var(--muted); }
+/* each segment carries its flamegraph color */
+#topbar .crumb-link {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--flame-text); text-decoration: none;
+  padding: 2px 7px; border-radius: 3px;
+  border: 1px solid rgba(0,0,0,.18);
+}
+#topbar .crumb-link:hover { filter: brightness(1.12); }
+#topbar .crumb-link[aria-current="page"] { font-weight: 600; }
 /* the one toggle button: fixed in the corner, above the sidebar */
 #toggle {
   position: fixed; top: 10px; left: 12px; z-index: 20;
@@ -57,13 +68,43 @@ body.sidebar-closed #sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
 #toggle:hover { background: #f1ede4; }
 /* when the sidebar is hidden the button sits over the top bar; make room for it */
 body.sidebar-closed #topbar { padding-left: 60px; }
-#content { max-width: 760px; padding: 32px 40px 80px; }
+/* prose stays narrow and readable; figures may use the full width */
+#content { max-width: 1180px; padding: 32px 40px 80px; }
+#content > p, #content > ul, #content > ol,
+#content > h1, #content > h2, #content > h3, #content > pre { max-width: 760px; }
 #content h1 { margin-top: 0; font-size: 2rem; }
-#content .placeholder { color: var(--muted); font-style: italic; }
-#content pre.ascii {
-  font-size: 11px; line-height: 1.2; overflow-x: auto;
-  background: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 6px;
+#content .portrait {
+  display: block; width: 320px; max-width: 100%;
+  border: 1px solid var(--border); border-radius: 6px; margin: 0 0 20px;
 }
+#content h2 { font-size: 1.4rem; margin: 36px 0 10px; }
+#content h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+#content ul { padding-left: 22px; }
+#content .placeholder { color: var(--muted); font-style: italic; }
+#content pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; line-height: 1.4; overflow-x: auto;
+  background: #fff; border: 1px solid var(--border); padding: 12px 14px; border-radius: 6px;
+}
+#content pre .comment { color: var(--muted); }
+#content figure { margin: 20px 0; }
+#content figure pre, #content figure figcaption { max-width: 760px; }
+#content figure img { display: block; border: 1px solid var(--border); border-radius: 6px; }
+/* placeholder for a diagram that has not been added yet */
+#content .img-todo {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 90px; padding: 16px;
+  border: 1px dashed var(--border); border-radius: 6px;
+  color: var(--muted); font-size: 13px; font-style: italic; text-align: center;
+}
+#content figcaption { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+/* trace images are very wide: scale to the column, caption below, click for full size */
+#content figure.trace figcaption { margin: 8px 0 0; }
+#content figure.shot { max-width: 900px; }
+#content figure.shot a { display: block; line-height: 0; }
+#content figure.shot img { width: 100%; }
+#content figure.trace a { display: block; line-height: 0; }
+#content figure.trace img { width: 100%; background: #fff; }
 
 /* ---------- sidebar header ---------- */
 #sidebar header { height: 52px; } /* reserves space under the fixed toggle */
@@ -78,13 +119,14 @@ body.sidebar-closed #topbar { padding-left: 60px; }
 }
 #flame .graph { flex: 1 1 auto; }
 
-/* a frame = [box][children] laid out left-to-right */
-.frame { display: flex; min-height: var(--leaf-h); }
+/* a frame = [box][children] laid out left-to-right.
+   Its height is its weight (set inline by sidebar.js) times --leaf-h. */
+.frame { display: flex; flex: 0 0 auto; height: calc(var(--w, 1) * var(--leaf-h)); }
 .frame > .box {
   flex: 0 0 var(--col-w); width: var(--col-w);
   margin: var(--gap);
   display: flex; align-items: center;
-  padding: 3px 4px;
+  padding: 2px 4px;
   border-radius: 2px;
   color: var(--flame-text);
   text-decoration: none;
@@ -100,8 +142,6 @@ body.sidebar-closed #topbar { padding-left: 60px; }
 .depth-0 > .box { flex-basis: 39px; width: 39px; }   /* "Home" */
 .depth-1 > .box { flex-basis: 76px; width: 76px; }   /* "Resources" / "Cool Work" */
 
-/* each child frame grows by the number of leaves beneath it (set inline by sidebar.js) */
-.frame > .children > .frame { flex-grow: var(--leaves, 1); }
 
 
 /* ---------- small screens: sidebar overlays content ---------- */

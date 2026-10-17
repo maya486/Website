@@ -4,22 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Count Uint8s · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Personal Projects / Highload Challenges / Count Uint8s</span>
     </div>
     <main id="content">
       <h1>Count Uint8s</h1>
-      <p class="placeholder">Nothing here yet.</p>
+
+      <h2>The Challenge</h2>
+      <p><a href="https://highload.fun/challenges/compute/count_uint8/solve/CPP">The challenge</a> is to count the number of bytes equal to 127 from a stream of 250,000,000 uint8s as fast as possible.</p>
+
+      <h2>The Solution</h2>
+      <p>The base algorithm is quite simple. It processes 32 uint8s at a time, reading the data with an aligned load, cmpeq to a vector of all 127s and then adding the mask to an accumulator (a mask lane looks like 0xFF=-1 so the accumulator grows negatively, but that can just be flipped at the end of the algorithm).</p>
+      <p>In terms of further optimizations, it is mainly messing around with tuning various knobs. I did things like software prefetching, processing 64 bytes at a time, and widening from the accumulator from an 8 bit lane vector to 16 bit lane vectors every BATCH_SIZE iterations and then 16 bit lane vectors to a final uint64 every BIG_BATCH_SIZE*BATCH_SIZE iterations.</p>
+      <p>Getting more ILP through having multiple pointers walk the stream at once is also very important. It is best to have them all be decently close together, a BLOCK_SIZE apart, and then when they get to the end of their section the whole group moves forward to the next NUM_WALKERS*BLOCKS_SIZE section. This, as opposed to something like splitting the entire stream into NUM_WALKERS huge chunks, is better for L2/L3 reuse and hardware prefetching.</p>
+
+      <h2>Results and Thoughts</h2>
+      <p>My final solution got me a score of 4339 and 14th place. The leaderboard is super tight, just a hundred points slower would put you at 30th. I think this was a pretty chill challenge that lets you focus more on tuning, unrolling, and ILP rather than a more complex algorithm like <a href="parse-integers.html">Parse Integers</a> or Unique Strings (coming soon). Overall, I would recommend this as one of the first challenges you do such that in other problems you can focus more on the algorithm and worry less about whether you have the basics down and are missing tons of performance over something simple.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>

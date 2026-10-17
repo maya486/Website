@@ -4,22 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cool Work at MIT · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=2">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
+  <script src="../assets/sidebar.js?v=2"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Cool Work at MIT</span>
     </div>
     <main id="content">
       <h1>Cool Work at MIT</h1>
-      <p class="placeholder">Nothing here yet.</p>
+      <p>I got to do a lot of cool work during my undergrad and masters.</p>
+      <p>I did research at CSAIL (CS + AI Lab) using clang to rewrite C code as a part of an automated process of turning C into Rust for my <a href="meng-thesis.html">thesis</a>.</p>
+      <p>I also took some really great classes. They solidified my understanding of what happens underneath the software abstraction and taught me how to use that knowledge effectively for maximum performance:</p>
+
+      <h3>Top 3</h3>
+      <ul>
+        <li><a href="6s894.html">6.S894 Accelerated Computing</a></li>
+        <li><a href="6-1060.html">6.1060 Software Performance Engineering</a></li>
+        <li><a href="6-1100.html">6.1100 Computer Language Engineering</a></li>
+      </ul>
+
+      <h3>Honorable Mentions</h3>
+      <ul>
+        <li>6.1810 Operating Systems Engineering</li>
+        <li>6.1920 Constructive Computer Architecture</li>
+        <li>6.5840 Distributed Systems</li>
+        <li>6.5930 Hardware Architecture for Deep Learning</li>
+      </ul>
+
+      <!-- TODO: replace href="#" with the link to the OS source (xv6) -->
+      <p><a href="https://pdos.csail.mit.edu/6.828/2023/schedule.html">6.1810</a> showed me how page tables, syscalls like fork() and mmap(), traps, and the filesystem are implemented under the hood. It did this by letting students get hands-on experience by directly modifying the source of a simple, unix-like <a href="#">OS</a>.</p>
+      <p>6.1920 taught me CPU microarchitecture from the ground up including superscalar, SMT, cache coherence, pipelining, store buffers etc.</p>
+      <p><a href="http://nil.csail.mit.edu/6.5840/2025/schedule.html">6.5840</a> discussed many papers on various distributed systems like MapReduce (of course), GFS, Spanner, Zookeeper, etc and gave me the chance to fully implement Raft in Go</p>
+      <p><a href="https://csg.csail.mit.edu/6.5930/info.html">6.5930</a> helped me connect my GPU knowledge with how actual ML/AI workloads would use them. My final project investigated how to address bottlenecks in flash attention.</p>
     </main>
   </div>
 </div>
-<script src="../assets/sidebar.js"></script>
 </body>
 </html>
