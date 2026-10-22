@@ -34,16 +34,75 @@
     return node.weight || 1;
   }
 
-  /* Classic flamegraph "hot" palette: every frame gets its own warm color,
-   * seeded from its label so it is stable across reloads. */
+  /* Flamegraph palette: red at the root, shifting toward yellow with depth.
+   * Each level owns a band of the red-to-yellow ramp; within a band a frame's
+   * exact shade comes from its label, re-rolled until it is far enough from
+   * its parent and from the sibling above it so neighbours never blend. */
+  var COLORS = {};          // label -> chosen color, shared with the breadcrumb
+  var MIN_DIFF = 70;        // smallest acceptable distance between neighbours
+  // How far a shade may stray from its level's center. The root stays pinned
+  // to red; deeper levels get a wide band so the palette keeps some variety.
+  function band(depth) {
+    if (depth === 0) return 10;                 // root stays red
+    if (depth === DEPTH_MAX) return 62;         // leaves stay in the yellows
+    return 38;
+  }
+
+  function maxDepth(node, d) {
+    d = d || 0;
+    var kids = node.children || [];
+    var m = d;
+    for (var i = 0; i < kids.length; i++) m = Math.max(m, maxDepth(kids[i], d + 1));
+    return m;
+  }
+  var DEPTH_MAX = maxDepth(TREE, 0);
+
+  // green carries the red -> yellow ramp: ~15 at the root, ~205 at the leaves
+  function bandCenter(depth) {
+    if (!DEPTH_MAX) return 110;
+    return 15 + 198 * (depth / DEPTH_MAX);
+  }
+
+  function hashColor(label, salt, depth) {
+    var s = salt ? label + "#" + salt : label, h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    var t = DEPTH_MAX ? depth / DEPTH_MAX : 0;
+    var jitter = (((h >> 8) & 0xff) / 255) * 2 - 1;   // -1 .. 1 within the band
+    // deeper frames stay bright and warm, so the ramp ends in yellow not green
+    var r = Math.round(205 + 30 * t + (50 - 30 * t) * ((h & 0xff) / 255));
+    var g = Math.round(bandCenter(depth) + band(depth) * jitter);
+    var b = Math.round(55 * (1 - 0.7 * t) * (((h >> 16) & 0xff) / 255));
+    g = Math.max(0, Math.min(g, r - 20));            // green never rivals red
+    // a brightness step gives neighbours a second way to differ, so crowded
+    // levels can separate by shade when there is no hue left to move into
+    // the root keeps full brightness so Home reads as a vivid red
+    var vmin = depth === 0 ? 0.96 : 0.74;
+    var v = vmin + (1 - vmin) * (((h >> 24) & 0xff) / 255);
+    return { r: Math.round(r * v), g: Math.round(g * v), b: Math.round(b * v) };
+  }
+
+  // green dominates the visible difference in this palette, so weight it most
+  function dist(a, b) {
+    if (!a || !b) return Infinity;
+    return Math.abs(a.g - b.g) + 0.5 * Math.abs(a.r - b.r) + 0.5 * Math.abs(a.b - b.b);
+  }
+
+  function pickColor(label, depth, neighbours) {
+    var best = null, bestScore = -1;
+    for (var salt = 0; salt < 200; salt++) {
+      var c = hashColor(label, salt, depth);
+      var worst = Infinity;
+      for (var i = 0; i < neighbours.length; i++) worst = Math.min(worst, dist(c, neighbours[i]));
+      if (worst >= MIN_DIFF) return c;
+      if (worst > bestScore) { bestScore = worst; best = c; }
+    }
+    return best;
+  }
+
+  function rgb(c) { return "rgb(" + c.r + "," + c.g + "," + c.b + ")"; }
+
   function frameColor(label) {
-    var h = 2166136261;
-    for (var i = 0; i < label.length; i++) { h ^= label.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-    var r1 = (h & 0xff) / 255, r2 = ((h >> 8) & 0xff) / 255, r3 = ((h >> 16) & 0xff) / 255;
-    var r = 205 + Math.round(50 * r1);
-    var g = 0 + Math.round(230 * r2);
-    var b = 0 + Math.round(55 * r3);
-    return "rgb(" + r + "," + g + "," + b + ")";
+    return COLORS[label] ? rgb(COLORS[label]) : "#e8642b";
   }
 
   // path from the root frame down to the page, for the breadcrumb
@@ -86,10 +145,13 @@
     return p;
   }
 
-  function render(node, depth, root, current) {
+  function render(node, depth, root, current, parentColor, ownColor) {
     var frame = document.createElement("div");
     frame.className = "frame depth-" + depth;
     frame.style.setProperty("--w", weight(node));
+
+    var color = ownColor || pickColor(node.label, depth, [parentColor]);
+    COLORS[node.label] = color;
 
     var a = document.createElement("a");
     a.className = "box";
@@ -98,14 +160,20 @@
     a.href = new URL(root + node.href, location.href).href;
     a.textContent = node.label;
     a.title = node.label;
-    a.style.background = frameColor(node.label);
+    a.style.background = rgb(color);
     if (node.href.split("/").pop() === current) a.className += " active";
     frame.appendChild(a);
 
     if (node.children && node.children.length) {
       var kids = document.createElement("div");
       kids.className = "children";
-      node.children.forEach(function (c) { kids.appendChild(render(c, depth + 1, root, current)); });
+      var placed = [color];
+      node.children.forEach(function (c) {
+        // each child differs from this frame and from every sibling already placed
+        var cc = pickColor(c.label, depth + 1, placed);
+        kids.appendChild(render(c, depth + 1, root, current, color, cc));
+        placed.push(cc);
+      });
       frame.appendChild(kids);
     }
     return frame;
@@ -154,6 +222,23 @@
     swapTo(url, true).catch(function () { location.href = url; });
   }
 
+  // On tall screens, grow the frames so the graph reaches the bottom of the
+  // sidebar. Never shrink below the CSS --leaf-h, so short screens are unchanged.
+  function fitHeight() {
+    var sidebar = document.getElementById("sidebar");
+    var flame = document.getElementById("flame");
+    var header = sidebar && sidebar.querySelector("header");
+    if (!sidebar || !flame) return;
+    var cs = getComputedStyle(flame);
+    var pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    var base = parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue("--leaf-h-base")) || 52;
+    var avail = sidebar.clientHeight - (header ? header.offsetHeight : 0) - pad;
+    var total = weight(TREE);
+    if (!total || avail <= 0) return;
+    flame.style.setProperty("--leaf-h", Math.max(base, Math.floor(avail / total)) + "px");
+  }
+
   function build() {
     var root = document.body.getAttribute("data-root") || "";
     var sidebar = document.getElementById("sidebar");
@@ -163,7 +248,7 @@
       '<header></header>' +
       '<nav id="flame" aria-label="Site navigation">' +
       '<div class="graph"></div></nav>';
-    sidebar.querySelector(".graph").appendChild(render(TREE, 0, root, currentPage()));
+    sidebar.querySelector(".graph").appendChild(render(TREE, 0, root, currentPage(), null, null));
     sidebar.addEventListener("click", onNavClick);
     var topbar = document.getElementById("topbar");
     if (topbar) topbar.addEventListener("click", onNavClick);
@@ -174,6 +259,9 @@
         swapTo(location.href, false).catch(function () { location.reload(); });
       });
     }
+
+    fitHeight();
+    window.addEventListener("resize", fitHeight);
 
     // no slide animation on the initial paint
     document.body.classList.add("preload");

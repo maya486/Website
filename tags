@@ -4,16 +4,27 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+MIN_DIFF	assets/sidebar.js	/^  var MIN_DIFF = 70;        \/\/ smallest acceptable distance between neighbours$/;"	v
+band	assets/sidebar.js	/^  function band(depth) {$/;"	f
+bandCenter	assets/sidebar.js	/^  function bandCenter(depth) {$/;"	f
 build	assets/sidebar.js	/^  function build() {$/;"	f
 build.apply	assets/sidebar.js	/^    function apply(closed) {$/;"	f
 canSwap	assets/sidebar.js	/^  var canSwap = \/^https?:$\/.test(location.protocol) && "fetch" in window && "pushState" in history;$/;"	v
 children	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 currentPage	assets/sidebar.js	/^  function currentPage() {$/;"	f
+dist	assets/sidebar.js	/^  function dist(a, b) {$/;"	f
+fitHeight	assets/sidebar.js	/^  function fitHeight() {$/;"	f
 frameColor	assets/sidebar.js	/^  function frameColor(label) {$/;"	f
+hashColor	assets/sidebar.js	/^  function hashColor(label, salt, depth) {$/;"	f
 href	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 label	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
+maxDepth	assets/sidebar.js	/^  function maxDepth(node, d) {$/;"	f
 onNavClick	assets/sidebar.js	/^  function onNavClick(e) {$/;"	f
-render	assets/sidebar.js	/^  function render(node, depth, root, current) {$/;"	f
+pathTo	assets/sidebar.js	/^  function pathTo(page, node, trail) {$/;"	f
+pickColor	assets/sidebar.js	/^  function pickColor(label, depth, neighbours) {$/;"	f
+render	assets/sidebar.js	/^  function render(node, depth, root, current, parentColor, ownColor) {$/;"	f
+renderCrumb	assets/sidebar.js	/^  function renderCrumb(page, root) {$/;"	f
+rgb	assets/sidebar.js	/^  function rgb(c) { return "rgb(" + c.r + "," + c.g + "," + c.b + ")"; }$/;"	f
 setActive	assets/sidebar.js	/^  function setActive(page) {$/;"	f
 swapTo	assets/sidebar.js	/^  function swapTo(url, push) {$/;"	f
 weight	assets/sidebar.js	/^  function weight(node) {$/;"	f

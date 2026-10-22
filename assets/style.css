@@ -6,7 +6,8 @@
   --border: #e3dfd6;
   --sidebar-w: 360px;
   --col-w: 96px;
-  --leaf-h: 52px;   /* height of one weight unit */
+  --leaf-h-base: 52px;  /* minimum height of one weight unit */
+  --leaf-h: var(--leaf-h-base);  /* grown by sidebar.js on tall screens */
   --gap: 3px;
   --flame-text: #000;
 }
@@ -68,10 +69,12 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
 #toggle:hover { background: #f1ede4; }
 /* when the sidebar is hidden the button sits over the top bar; make room for it */
 body.sidebar-closed #topbar { padding-left: 60px; }
-/* prose stays narrow and readable; figures may use the full width */
-#content { max-width: 1180px; padding: 32px 40px 80px; }
+/* Prose takes ~90% of the content width and grows with the window, up to a
+   line length that stays readable. Figures may use the full width. */
+:root { --prose: 90%; }
+#content { padding: 32px 40px 80px; }
 #content > p, #content > ul, #content > ol,
-#content > h1, #content > h2, #content > h3, #content > pre { max-width: 760px; }
+#content > h1, #content > h2, #content > h3, #content > pre { max-width: max(640px, var(--prose)); }
 #content h1 { margin-top: 0; font-size: 2rem; }
 #content .portrait {
   display: block; width: 320px; max-width: 100%;
@@ -88,7 +91,7 @@ body.sidebar-closed #topbar { padding-left: 60px; }
 }
 #content pre .comment { color: var(--muted); }
 #content figure { margin: 20px 0; }
-#content figure pre, #content figure figcaption { max-width: 760px; }
+#content figure pre, #content figure figcaption { max-width: max(640px, var(--prose)); }
 #content figure img { display: block; border: 1px solid var(--border); border-radius: 6px; }
 /* placeholder for a diagram that has not been added yet */
 #content .img-todo {
@@ -98,13 +101,10 @@ body.sidebar-closed #topbar { padding-left: 60px; }
   color: var(--muted); font-size: 13px; font-style: italic; text-align: center;
 }
 #content figcaption { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-/* trace images are very wide: scale to the column, caption below, click for full size */
-#content figure.trace figcaption { margin: 8px 0 0; }
-#content figure.shot { max-width: 900px; }
-#content figure.shot a { display: block; line-height: 0; }
-#content figure.shot img { width: 100%; }
-#content figure.trace a { display: block; line-height: 0; }
-#content figure.trace img { width: 100%; background: #fff; }
+/* trace and screenshot images match the prose width; click for full size */
+#content figure.trace, #content figure.shot { max-width: max(640px, var(--prose)); }
+#content figure.trace a, #content figure.shot a { display: block; line-height: 0; }
+#content figure.trace img, #content figure.shot img { width: 100%; background: #fff; }
 
 /* ---------- sidebar header ---------- */
 #sidebar header { height: 52px; } /* reserves space under the fixed toggle */

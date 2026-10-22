@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anthropic Performance Take-Home · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css?v=2">
+<link rel="stylesheet" href="../assets/style.css?v=10">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="../assets/sidebar.js?v=2"></script>
+  <script src="../assets/sidebar.js?v=10"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Personal Projects / Anthropic Performance Take-Home</span>
@@ -31,7 +31,6 @@
       <p>The below diagram is the trace of the starter code, notice how only 1 alu, 1 load, 1 store, and 1 flow are utilized.</p>
       <figure class="trace">
         <a href="../assets/img/trace-starter.png"><img src="../assets/img/trace-starter.png" alt="Debug trace of the starter code"></a>
-        <figcaption>Debug trace of the starter code. Click to view full size.</figcaption>
       </figure>
 
       <h3>Performance Benchmarks</h3>
@@ -43,7 +42,6 @@
       <h3>V1 &mdash; 2425 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v1.png"><img src="../assets/img/trace-v1.png" alt="V1 debug trace"></a>
-        <figcaption>V1 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>The V1 algorithm is implemented through 2 repeated computations on 128 walkers. Each half splits the walkers into 2 groups of 64 whose executions are pipelined together. Pipelining was an attractive choice because roughly half of the work for each iteration of the algorithm is spent doing valu hashing and the other half is spent on the load engine to load in the next tree nodes. Therefore, when one group of 64 is utilizing the valu, the other group is loading which is pretty good for utilization. The green load (vloads) prologue and store epilogue which wrap the valu+yellow load (regular load) main work represent the loading of walker state into registers and final writeback into memory for a group of 128 walkers.</p>
@@ -51,7 +49,6 @@
       <h3>V2 &mdash; 2096 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v2.png"><img src="../assets/img/trace-v2.png" alt="V2 debug trace"></a>
-        <figcaption>V2 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>A couple optimizations have happened since V1. First, note that there are some small periodic gaps in the valu workload. This happened because valu ops could be shed by combining a few ops per iteration into fmas (fused multiply adds). This made the load engine the definitive bottleneck of the program and my priority in further optimization.</p>
@@ -62,7 +59,6 @@
       <h3>V3 &mdash; 1745 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v3.png"><img src="../assets/img/trace-v3.png" alt="V3 debug trace"></a>
-        <figcaption>V3 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>Another couple hundred cycles were shaved off by additional load optimizations for tree level 2 (4 nodes), smarter packing, and offloading work to the alu. In order to generalize the load optimizations further, a slight restructuring had to happen. Instead of using the indices themselves to determine which node to vselect. Now a hierarchy of vselects based on the parities of the walker indices instead of the indices themselves. Note that the parities of the previous level were already calculated to determine whether a walker goes left or right down the tree which was useful. If this doesn&rsquo;t make complete sense, think about if b_0 was the parity at the level 0 and b_1 was the parity at level 1, how could 3 vselects be chained together to identify which of the 4 level 2 tree nodes a walker ends up at.</p>
@@ -73,7 +69,6 @@
       <h3>V4 &mdash; 1503 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v4.png"><img src="../assets/img/trace-v4.png" alt="V4 debug trace"></a>
-        <figcaption>V4 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>At this point the general priority of offloading the loads to vselects on the flow engine stopped working. With each additional level of the tree optimized, the number of vselects needed more than doubled. Therefore, additional optimization would actually have made the overall code slower because the original loads would have been faster. Thus, another approach had to be taken to reduce cycle count.</p>
@@ -84,7 +79,6 @@
       <h3>V5 &mdash; 1393 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v5.png"><img src="../assets/img/trace-v5.png" alt="V5 debug trace"></a>
-        <figcaption>V5 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>It was previously said in the V4 section that additional vselects would have a longer cycle count than the original loads they would be replacing and therefore would be a bad idea. However, with the overlap of various walker groups, even if there was a stall in one pair of groups that is in a vselect heavy era, another pair could pick up the slack and populate the other engines such that the stall was hidden. This made it possible to optimize out one more level of loads. Note how the bubbles in alu and valu workloads (indicating load bottlenecks) have been alleviated with this change. Now the V5 valu instructions in particular looked like a huge mammoth of operations.</p>
@@ -93,7 +87,6 @@
       <h3>V6 &mdash; 1379 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v6.png"><img src="../assets/img/trace-v6.png" alt="V6 debug trace"></a>
-        <figcaption>V6 debug trace. Click to view full size.</figcaption>
       </figure>
 
       <p>14 cycles were cut by noticing that the code tracks the tree node index a walker is at even when the code is relying purely on the node parities (remember b_0 and b_1?) in those first few tree levels to move the walker. This useless tracking could be eliminated and when the load optimizations ended, the address could simply be reconstructed from the node parities. These reduced the valu/alu workload slightly which was the main bottleneck.</p>
@@ -101,10 +94,9 @@
       <h3>V7 &mdash; 1361 cycles</h3>
       <figure class="trace">
         <a href="../assets/img/trace-v7.png"><img src="../assets/img/trace-v7.png" alt="V7 debug trace"></a>
-        <figcaption>V7 debug trace. Click to view full size.</figcaption>
       </figure>
 
-      <p>Many optimizations were implemented that only resulted in a 1-2 cycles gain &#128557;. The 2 ideas that caused a substantial reduction in cycles were using add_imms and overlapping slot generation for the previously sequential split of 128 walkers before they get packed by the packing algorithm.</p>
+      <p>Many optimizations were implemented that only resulted in a 1-2 cycles gain &#128128;. The 2 ideas that caused a substantial reduction in cycles were using add_imms and overlapping slot generation for the previously sequential split of 128 walkers before they get packed by the packing algorithm.</p>
       <p>Using add_imms on the flow engine caused a slight speedup. It was especially helpful in the setup code which could have its many const loads replaced with add_imms. It turned a bottleneck of 2 const initializations per cycle to 3. Add_imms could also be used a bit to replace an add on the alu or valu, but the flow engine is so less efficient at executing them and at that point the flow engine was already decently saturated anyways so speedup was miniscule.</p>
       <p>The final optimization was overlapping the previously sequential groups of 128 walkers. Because of the staggered structure, some walkers from the second 128 group could begin before all the walkers of the first 128 group had finished. This flexibility already existed in the code and according to the packing algorithm there were no dependency violations stopping this. However, because the packing algorithm was greedy, the order in which these slots were emitted mattered. Therefore changing this slot emission order explicitly allowed for better overlap and the collapse of the little valu/alu bubble seen in the middle of V6&rsquo;s trace.</p>
 
