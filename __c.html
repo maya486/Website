@@ -1,0 +1,12 @@
+<iframe id="f" src="/index.html" width="900" height="900"></iframe><pre id="out">pending</pre>
+<script>
+document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
+ function p(s){var m=s.match(/(\d+), (\d+), (\d+)/);return {r:+m[1],g:+m[2],b:+m[3]};}
+ function dist(a,b){return Math.abs(a.g-b.g)+0.5*Math.abs(a.r-b.r)+0.5*Math.abs(a.b-b.b);}
+ var map={};Array.from(d.querySelectorAll('#flame .box')).forEach(function(a){map[a.textContent]=p(a.style.background);});
+ var adj=[['Home','Personal Projects'],['Personal Projects','Books and Resources I Like'],['Books and Resources I Like','Cool Work at MIT'],['Cool Work at MIT','About Me'],['Personal Projects','Anthropic Performance Take-Home'],['Anthropic Performance Take-Home','Highload Challenges'],['Highload Challenges','Parse Integers'],['Parse Integers','Median'],['Median','Count Uint8s'],['Cool Work at MIT','MEng Thesis'],['MEng Thesis','6.S894'],['6.S894','6.1060'],['6.1060','6.1100'],['6.S894','H100 Matmul']];
+ var mins=adj.map(function(x){return dist(map[x[0]],map[x[1]]);});
+ var low=adj.filter(function(x,i){return mins[i]<55;}).map(function(x){return x.join('/');});
+ document.getElementById('out').textContent='min adjacent: '+Math.min.apply(null,mins).toFixed(0)+'  below55: '+(low.length?low.join(', '):'none')
+ +'\nMedian '+JSON.stringify(map['Median'])+'  6.S894 '+JSON.stringify(map['6.S894']);},400);};
+</script>

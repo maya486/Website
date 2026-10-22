@@ -34,51 +34,25 @@
     return node.weight || 1;
   }
 
-  /* Flamegraph palette: red at the root, shifting toward yellow with depth.
-   * Each level owns a band of the red-to-yellow ramp; within a band a frame's
-   * exact shade comes from its label, re-rolled until it is far enough from
-   * its parent and from the sibling above it so neighbours never blend. */
+  /* Classic flamegraph "hot" palette: every frame gets its own warm color,
+   * seeded from its label so it is stable across reloads. A frame must differ
+   * from its parent and from every sibling already placed, so neighbours never
+   * blend together; when a color is too close it is re-rolled with a new salt. */
   var COLORS = {};          // label -> chosen color, shared with the breadcrumb
-  var MIN_DIFF = 70;        // smallest acceptable distance between neighbours
-  // How far a shade may stray from its level's center. The root stays pinned
-  // to red; deeper levels get a wide band so the palette keeps some variety.
-  function band(depth) {
-    if (depth === 0) return 10;                 // root stays red
-    if (depth === DEPTH_MAX) return 62;         // leaves stay in the yellows
-    return 38;
-  }
+  var MIN_DIFF = 90;        // smallest acceptable distance between neighbours
 
-  function maxDepth(node, d) {
-    d = d || 0;
-    var kids = node.children || [];
-    var m = d;
-    for (var i = 0; i < kids.length; i++) m = Math.max(m, maxDepth(kids[i], d + 1));
-    return m;
-  }
-  var DEPTH_MAX = maxDepth(TREE, 0);
-
-  // green carries the red -> yellow ramp: ~15 at the root, ~205 at the leaves
-  function bandCenter(depth) {
-    if (!DEPTH_MAX) return 110;
-    return 15 + 198 * (depth / DEPTH_MAX);
-  }
-
-  function hashColor(label, salt, depth) {
+  function hashColor(label, salt) {
+    // salt 0 is the plain label hash, so frames that already differ keep their color
     var s = salt ? label + "#" + salt : label, h = 2166136261;
     for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-    var t = DEPTH_MAX ? depth / DEPTH_MAX : 0;
-    var jitter = (((h >> 8) & 0xff) / 255) * 2 - 1;   // -1 .. 1 within the band
-    // deeper frames stay bright and warm, so the ramp ends in yellow not green
-    var r = Math.round(205 + 30 * t + (50 - 30 * t) * ((h & 0xff) / 255));
-    var g = Math.round(bandCenter(depth) + band(depth) * jitter);
-    var b = Math.round(55 * (1 - 0.7 * t) * (((h >> 16) & 0xff) / 255));
-    g = Math.max(0, Math.min(g, r - 20));            // green never rivals red
-    // a brightness step gives neighbours a second way to differ, so crowded
-    // levels can separate by shade when there is no hue left to move into
-    // the root keeps full brightness so Home reads as a vivid red
-    var vmin = depth === 0 ? 0.96 : 0.74;
-    var v = vmin + (1 - vmin) * (((h >> 24) & 0xff) / 255);
-    return { r: Math.round(r * v), g: Math.round(g * v), b: Math.round(b * v) };
+    var r = 205 + Math.round(50 * ((h & 0xff) / 255));
+    var g = Math.round(230 * (((h >> 8) & 0xff) / 255));
+    var b = Math.round(55 * (((h >> 16) & 0xff) / 255));
+    // keep the yellows warm: red always leads green by a clear margin, so no
+    // frame drifts into chartreuse
+    r = Math.min(255, Math.max(r, g + 40));
+    g = Math.min(g, r - 40);
+    return { r: r, g: g, b: b };
   }
 
   // green dominates the visible difference in this palette, so weight it most
@@ -87,10 +61,10 @@
     return Math.abs(a.g - b.g) + 0.5 * Math.abs(a.r - b.r) + 0.5 * Math.abs(a.b - b.b);
   }
 
-  function pickColor(label, depth, neighbours) {
+  function pickColor(label, neighbours) {
     var best = null, bestScore = -1;
     for (var salt = 0; salt < 200; salt++) {
-      var c = hashColor(label, salt, depth);
+      var c = hashColor(label, salt);
       var worst = Infinity;
       for (var i = 0; i < neighbours.length; i++) worst = Math.min(worst, dist(c, neighbours[i]));
       if (worst >= MIN_DIFF) return c;
@@ -102,7 +76,7 @@
   function rgb(c) { return "rgb(" + c.r + "," + c.g + "," + c.b + ")"; }
 
   function frameColor(label) {
-    return COLORS[label] ? rgb(COLORS[label]) : "#e8642b";
+    return COLORS[label] ? rgb(COLORS[label]) : rgb(hashColor(label, 0));
   }
 
   // path from the root frame down to the page, for the breadcrumb
@@ -150,7 +124,7 @@
     frame.className = "frame depth-" + depth;
     frame.style.setProperty("--w", weight(node));
 
-    var color = ownColor || pickColor(node.label, depth, [parentColor]);
+    var color = ownColor || pickColor(node.label, [parentColor]);
     COLORS[node.label] = color;
 
     var a = document.createElement("a");
@@ -170,7 +144,7 @@
       var placed = [color];
       node.children.forEach(function (c) {
         // each child differs from this frame and from every sibling already placed
-        var cc = pickColor(c.label, depth + 1, placed);
+        var cc = pickColor(c.label, placed);
         kids.appendChild(render(c, depth + 1, root, current, color, cc));
         placed.push(cc);
       });

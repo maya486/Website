@@ -9,7 +9,7 @@ Static personal site with a flamegraph-style sidebar. No build step: open `index
 - `assets/img/` — images. Save a file here and reference it as `../assets/img/<name>.png` from a page in `pages/`.
 - `assets/style.css` — styles. `--col-w` sets column width, `--leaf-h-base` the minimum frame height.
 
-Frame colors are computed in `assets/sidebar.js`: each level owns a band of a red-to-yellow ramp (red at Home, yellow at the deepest pages), and within a band a frame's shade comes from its label, re-rolled until it is far enough from its parent and every sibling already placed.
+Frame colors are computed in `assets/sidebar.js`: each frame's shade comes from its label, drawn from the classic flamegraph red-to-yellow palette, and re-rolled until it is far enough from its parent and every sibling already placed.
 
 The sidebar is open by default. The ☰ button in the top-left corner hides/shows it and remembers the choice in `localStorage`.
 
