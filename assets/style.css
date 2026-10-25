@@ -94,9 +94,6 @@ body.sidebar-closed #topbar { padding-left: 60px; }
 #content h2 { font-size: 1.4rem; margin: 36px 0 10px; }
 #content h3 { font-size: 1.1rem; margin: 26px 0 8px; }
 #content ul { padding-left: 22px; }
-/* the home page section list: a bullet, a chip, then its description */
-#content ul.sections { padding-left: 28px; }
-#content ul.sections li { margin: 10px 0; }
 #content .placeholder { color: var(--muted); font-style: italic; }
 #content pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
