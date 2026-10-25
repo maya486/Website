@@ -17,8 +17,10 @@
     </div>
     <main id="content">
       <h1>MEng Thesis</h1>
-      <p>With supervisors MIT professor Martin Rinard and researcher Jeff Perkins I worked on a project, Tenjin, that automatically turns unsafe C&ndash;with all sorts of hacky, dangerous memory patterns that are hard to reason about for code safety&ndash;into safe idiomatic Rust. Rust&rsquo;s memory model is much stricter than C&rsquo;s, in particular, there are no pointers which limits the chance of vulnerabilities or bugs. Rust still offers good speed, though, that other safer languages don&rsquo;t.</p>
+        <p>My thesis involved doing static program analysis on C source code and modifying the AST to generate new code.</p>
+        <p>With supervisors MIT professor Martin Rinard and researcher Jeff Perkins I worked on a project, Tenjin, that automatically turns unsafe C&ndash;with all sorts of hacky, dangerous memory patterns that are hard to reason about for code safety&ndash;into safe idiomatic Rust. Rust&rsquo;s memory model is much stricter than C&rsquo;s, in particular, there are no pointers which limits the chance of vulnerabilities or bugs. Rust still offers good speed, though, that other safer languages don&rsquo;t.</p>
       <p>To make this automated translation to Rust easier, the C source code is first refactored into cleaner C beforehand in a phase called preparatory refactoring. I contributed 2 C-to-C passes to this phase that each addressed a specific C memory pattern that isn&rsquo;t directly compatible with idiomatic Rust.</p>
+      <h2>Union Punning Pass</h2>
       <p>The first pass converts hacky bit reinterpretation from type to type using union fields (called union punning) into an encapsulated method that uses memcpy. This new method is only temporary, though, and is translated later in the Tenjin process to use Rust&rsquo;s to_bits and from_bits methods.</p>
       <figure>
         <figcaption>Before pass</figcaption>
@@ -45,8 +47,25 @@
 ...
 static void __tenjin_1890_5_float_to_uint32_t(float x, uint32_t *out) {
     memcpy(out, &amp;x, 4);
+}
+...
+uint32_t test(float flt) {
+    float __tenjin_tmp_in_in;
+    uint32_t __tenjin_tmp_out_in;
+    if (flt &gt; 2) {
+        __tenjin_tmp_in_in = flt + 2;
+    } else {
+        __tenjin_tmp_in_in = flt * 2;
+    }
+    __tenjin_1890_5_float_to_uint32_t(__tenjin_tmp_in_in, &amp;__tenjin_tmp_out_in);
+    if (flt &gt; 10) {
+        return __tenjin_tmp_out_in - 9;
+    } else {
+        return __tenjin_tmp_out_in * 10;
+    }
 }</code></pre>
       </figure>
+      <h2>Pointer Pass</h2>
       <p>The second pass is more expansive and targets pointers that represent arrays, including iterating and modifying the array contents via a pointer. The pass aims to replace this behavior using explicit array index variables as well as create a Rust Slice equivalent for describing subarrays using a struct with a base array pointer and a length. This transformation is done within and across functions.</p>
       <p>Below is an example transformation of a quicksort implementation that shows how the code is refactored to match the Rust Slice structure across multiple functions. Note that the transformed code only keeps the base array variable arr as a raw pointer and everything else is now in the Rust Slice struct using array indexing and the length attribute. Data is only read and written through index operations.</p>
       <figure>
@@ -117,6 +136,7 @@ void sort(int *arr, int n) {
     quick_sort((RustSlice_int){ arr, n });
 }</code></pre>
       </figure>
+      <h2>Implementation</h2>
       <p>In order to implement these passes I did the static analysis and source code rewrite through clang which has solid CFG, domination, and AST visitor support. Going deeper to LLVM would have provided better analysis, but is too far beyond the original textual source code to easily rewrite it. The clang AST provides source locations in the file as well as nice insert, delete, and replace methods for nodes, though makes it harder to navigate the code as all the code is represented as in a very verbose tree structure.</p>
       <p>The static analysis in the union bit reinterpretation pass includes domination analysis ensuring that all of the source union fields dominate all the destination field reads to prevent undefined memory problems. For the pointer pass an example of the static analysis done is that every type of pointer usage in the AST (e.g. p+=n, *++p, p == NULL) is classified into one of 30+ cases. This information is then used to infer the overall usage pattern of a given pointer in a method in order to check whether it is a candidate for explicit array indexing as well as to correctly transform the source into the explicit array indexing equivalent (e.g. p_index+=n, buf[++p_index], p_index == -1).</p>
       <p>My 2 passes were successfully tested on the internal Tenjin testing suite as well as on a handful of public C repos to verify correctness. The union bit reinterpretation pass successfully transformed 86% (1633/1899) of all candidate unions and the pointer pass transformed 98.6% (3672/3725) of candidate pointers found in the public repos.</p>
