@@ -10,6 +10,7 @@ build.apply	assets/sidebar.js	/^    function apply(closed) {$/;"	f
 canSwap	assets/sidebar.js	/^  var canSwap = \/^https?:$\/.test(location.protocol) && "fetch" in window && "pushState" in history;$/;"	v
 children	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 currentPage	assets/sidebar.js	/^  function currentPage() {$/;"	f
+decorateLinks	assets/sidebar.js	/^  function decorateLinks() {$/;"	f
 dist	assets/sidebar.js	/^  function dist(a, b) {$/;"	f
 fitHeight	assets/sidebar.js	/^  function fitHeight() {$/;"	f
 frameColor	assets/sidebar.js	/^  function frameColor(label) {$/;"	f

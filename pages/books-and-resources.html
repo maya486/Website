@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Books and Resources I Like · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css?v=12">
+<link rel="stylesheet" href="../assets/style.css?v=16">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="../assets/sidebar.js?v=12"></script>
+  <script src="../assets/sidebar.js?v=16"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Books and Resources I Like</span>
@@ -20,26 +20,22 @@
 
       <h2>C++ Programming</h2>
       <ul>
-        <li>Tour of C++ by Bjarne Stroustrup as an introduction</li>
-        <li>Effective C++ 3rd Edition by Scott Meyers</li>
-        <li><a href="https://www.agner.org/optimize/optimizing_cpp.pdf">Optimizing Software in C++</a> by Agner Fog</li>
+        <li><strong>Tour of C++ 3rd Edition by Bjarne Stroustrup</strong> &mdash; A comprehensive introduction to C++.</li>
+        <li><strong>Effective C++ 3rd Edition by Scott Meyers</strong> &mdash; An intermediate book that explains how to write idiomatic, clean code.</li>
+        <li><strong><a href="https://www.agner.org/optimize/optimizing_cpp.pdf">Optimizing Software in C++</a> by Agner Fog</strong> &mdash; A strong top-to-bottom overview about understanding and writing performant C++.</li>
       </ul>
 
       <h2>Performance Engineering</h2>
       <ul>
-        <li><a href="https://github.com/dendibakh/perf-book/releases/tag/2.0_release">Performance Analysis and Tuning on Modern CPUs</a> by Denis Bakhvalov &larr; my favorite
-          <ul>
-            <li>Bakhvalov also has a <a href="https://easyperf.net/">website</a> and a course in measuring performance called perf-ninja</li>
-          </ul>
-        </li>
-        <li><a href="https://www.youtube.com/watch?v=BVVNtG5dgks">Matt Godbolt Skylake Talk</a></li>
-        <li><a href="https://en.algorithmica.org/hpc/">Algorithms for Modern Hardware</a> by Sergey Slotin</li>
+        <li><strong><a href="https://en.algorithmica.org/hpc/">Algorithms for Modern Hardware</a> by Sergey Slotin</strong> &mdash; Not quite as deep as other books, but gives a solid lay of the land/refresher of performance engineering. The case studies in chapters 11 and 12 are most interesting.</li>
+        <li><strong><a href="https://www.youtube.com/watch?v=BVVNtG5dgks">Matt Godbolt Skylake Talk</a></strong> &mdash; An overview of the CPU microarchitecture of Skylake (for more details though go to chapter 3 of &darr;).</li>
+        <li><strong><a href="https://github.com/dendibakh/perf-book/releases/tag/2.0_release">Performance Analysis and Tuning on Modern CPUs</a> by Denis Bakhvalov</strong> &mdash; My favorite CS book. It goes in depth into cpu microarchitecture, understanding the wide array of performance metrics, and solidifies the cycle of gather performance metrics &rarr; match to current code behavior &rarr; create strategy to relieve bottleneck. Bakhvalov also has a <a href="https://easyperf.net/">website</a> and a course in measuring performance called perf-ninja.</li>
       </ul>
 
       <h2>GPU</h2>
       <ul>
-        <li>Programming Massively Parallel Processors</li>
-        <li><a href="https://www.youtube.com/@GPUMODE">GPU Mode Lectures</a> (also a discord with smart people doing interesting things)</li>
+        <li><strong>Programming Massively Parallel Processors by Wen-mei W. Hwu, David B. Kirk, Izzat El Hajj</strong> &mdash; A good first GPU book. Very helpful if you didn't have the fortune of taking a GPU class in college.</li>
+        <li><strong><a href="https://www.youtube.com/@GPUMODE">GPU Mode Lectures</a></strong> &mdash; A lecture series about various topics in GPUs. Earlier lectures especially give good background (e.g. scan algorithm, flash attention, CuTe, etc) and more recent lectures give insight into the frontier of the field. GPU Mode is also a discord with smart people doing interesting things.</li>
       </ul>
     </main>
   </div>

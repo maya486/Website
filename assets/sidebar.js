@@ -91,6 +91,30 @@
     return null;
   }
 
+  // Links that point at another page of this site render as colored chips,
+  // matching the breadcrumb: the page's own flamegraph color, in bold.
+  var PAGE_BY_FILE = (function () {
+    var m = {};
+    (function walk(n) {
+      m[n.href.split("/").pop()] = n.label;
+      (n.children || []).forEach(walk);
+    })(TREE);
+    return m;
+  })();
+
+  function decorateLinks() {
+    var links = document.querySelectorAll("#content a[href]");
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (a.host !== location.host) continue;            // leave external links alone
+      var file = a.pathname.split("/").pop();
+      var label = PAGE_BY_FILE[file];
+      if (!label || !COLORS[label]) continue;            // not a site page
+      a.classList.add("page-chip");
+      a.style.background = rgb(COLORS[label]);
+    }
+  }
+
   function renderCrumb(page, root) {
     var el = document.querySelector("#topbar .crumb");
     if (!el) return;
@@ -181,6 +205,7 @@
       var page = url.split("/").pop().split(/[?#]/)[0] || "index.html";
       setActive(page);
       renderCrumb(page, newRoot);
+      decorateLinks();
       window.scrollTo(0, 0);
     });
   }
@@ -188,7 +213,7 @@
   function onNavClick(e) {
     if (!canSwap) return;
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    var a = e.target.closest ? e.target.closest("#flame .box, .crumb-link") : null;
+    var a = e.target.closest ? e.target.closest("#flame .box, .crumb-link, #content a.page-chip") : null;
     if (!a) return;
     e.preventDefault();
     var url = a.href;
@@ -226,7 +251,10 @@
     sidebar.addEventListener("click", onNavClick);
     var topbar = document.getElementById("topbar");
     if (topbar) topbar.addEventListener("click", onNavClick);
+    var content = document.getElementById("content");
+    if (content) content.addEventListener("click", onNavClick);
     renderCrumb(currentPage(), root);
+    decorateLinks();
     if (canSwap) {
       history.replaceState({ url: location.href }, "", location.href);
       window.addEventListener("popstate", function () {
