@@ -12,7 +12,8 @@
         { label: "Highload Challenges", href: "pages/highload-challenges.html", children: [
           { label: "Parse Integers", href: "pages/parse-integers.html", weight: 0.85 },
           { label: "Median", href: "pages/median.html", weight: 0.85 },
-          { label: "Count Uint8s", href: "pages/count-uint8s.html", weight: 0.85 }
+          { label: "Count Uint8s", href: "pages/count-uint8s.html", weight: 0.85 },
+          { label: "Unique Strings", href: "pages/unique-strings.html", weight: 0.85 }
         ]}
       ]},
       { label: "Books and Resources I Like", href: "pages/books-and-resources.html", weight: 2 },
