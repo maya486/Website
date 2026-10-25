@@ -4,22 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>6.S894 · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css?v=16">
+<link rel="stylesheet" href="../assets/style.css?v=17">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="../assets/sidebar.js?v=16"></script>
+  <script src="../assets/sidebar.js?v=17"></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Cool Work at MIT / 6.S894</span>
     </div>
     <main id="content">
       <h1>6.S894</h1>
-      <p>This class provided a solid introduction to programming on GPUs with CUDA. The first three labs taught you the fundamentals, starting out with a CPU Mandelbrot implementation with AVX512 vectorization to learning the basic structure of the class&rsquo;s GPU: NVIDIA RTX 4000 Ada. The next three built up matmul through tiling, overlap mem and compute, and using the tensor cores. The second half of the labs explored more breadth like a parallel hierarchical scan and implementing reduce-scatter and all-gather on a 2x2 mesh of Google TPUv5ps in Pallas.</p>
-      <p>The coolest thing, though, was redoing matmul, now on an H100. We got to use more advanced features like the TMA (Tensor Memory Accelerator) and wgmma (warp group-level matrix multiply) and ended up getting 95% of cuBLAS. Check out the full write up: <a href="h100-matmul.html">H100 Matmul</a>.</p>
-      <p>Taking 6.S894 after 6.1060 (it&rsquo;s a prereq) helped solidify a lot more of the techniques of performance engineering. GPUs give you a lot more direct control over how your code is actually run and lets you make explicit choices over how to interact with the compute and memory units and see visible results.</p>
+      <p>6.S894 Accelerated Computing provided a solid introduction to programming on GPUs with CUDA. The first three labs taught the fundamentals, starting out with implementing Mandelbrot on a CPU with AVX512 vectorization and on a GPU to learn the basics of thinking about parallel computation and to introduce the class&rsquo;s GPU: NVIDIA RTX 4000 Ada. The next three built up matmul through tiling, overlapping memory and compute, and using the tensor cores. The second half of the labs explored more breadth like a parallel hierarchical scan and implementing reduce-scatter and all-gather on a 2x2 mesh of Google TPUv5ps in Pallas.</p>
+      <p>The coolest thing, though, was redoing matmul, now on an H100. We got to use more advanced features like TMA (Tensor Memory Accelerator) and wgmma (warp group-level matrix multiply) and ended up getting 95% of cuBLAS. Check out the full write up: <a href="h100-matmul.html">H100 Matmul</a>.</p>
+      <p>Taking this class after <a href="6-1060.html">6.1060</a> (it&rsquo;s a prereq) helped solidify a lot more of the techniques of performance engineering. GPUs give you a lot more direct control over how your code is actually run and lets you make explicit choices over how to interact with the compute and memory units and see visible results.</p>
       <p>Overall, this was a great class which definitely shaped my interest in GPU programming. Here is the <a href="https://accelerated-computing.academy/fall25/">class website</a>. I would also recommend checking out its Resources tab which has info on SASS, PTX, TMA, and of course links GPU Mode.</p>
     </main>
   </div>
