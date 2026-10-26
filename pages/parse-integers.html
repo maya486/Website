@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parse Integers · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css?v=19">
+<link rel="stylesheet" href="../assets/style.css?v=20">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="../assets/sidebar.js?v=19"></script>
+  <script src="../assets/sidebar.js?v=20"></script>
   <div id="main">
     <div id="topbar">
-      <span class="crumb">Personal Projects / Highload Challenges / Parse Integers</span>
+      <span class="crumb">Personal Projects / HighLoad Challenges / Parse Integers</span>
     </div>
     <main id="content">
       <h1>Parse Integers</h1>
@@ -24,7 +24,7 @@
       <h2>The Solution</h2>
 
       <h3>Solution Overview</h3>
-      <p>This was the first Highload challenge I did so I wanted to get a taste of the types of algorithms and strategies used for this type of problem. Then the following challenges, I would do completely on my own. I read over <a href="https://blog.mattstuchlik.com/2024/07/12/summing-integers-fast.html">Matt Stuchlik&rsquo;s solution</a> which well documents his strategy.</p>
+      <p>This was the first HighLoad challenge I did so I wanted to get a taste of the types of algorithms and strategies used for this type of problem. Then the following challenges, I would do completely on my own. I read over <a href="https://blog.mattstuchlik.com/2024/07/12/summing-integers-fast.html">Matt Stuchlik&rsquo;s solution</a> which well documents his strategy.</p>
       <p>Essentially the algorithm processes 32 bytes of the input at a time starting from the end in reverse after initially mmaping all the data. For brevity and explanation purposes, though, I will only demonstrate the algorithm as if it operated on 16 byte chunks at a time and the 32 byte version is left as an exercise to the reader.</p>
       <p>The 16 byte chunk read will look something like this:</p>
 <pre><code>{'1', '6', '4', '8', '2', '\n', '5', '4', '\n', '9', '8', '9', '9', '4', '5', '2'}</code></pre>

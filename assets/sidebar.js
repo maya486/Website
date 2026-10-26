@@ -9,15 +9,15 @@
     label: "Home", href: "index.html", children: [
       { label: "Personal Projects", href: "pages/personal-projects.html", children: [
         { label: "Anthropic Performance Take-Home", href: "pages/anthropic-performance-take-home.html", weight: 2 },
-        { label: "Highload Challenges", href: "pages/highload-challenges.html", children: [
+        { label: "HighLoad Challenges", href: "pages/highload-challenges.html", children: [
           { label: "Parse Integers", href: "pages/parse-integers.html", weight: 0.85 },
           { label: "Median", href: "pages/median.html", weight: 0.85 },
           { label: "Count Uint8s", href: "pages/count-uint8s.html", weight: 0.85 },
           { label: "Unique Strings", href: "pages/unique-strings.html", weight: 0.85 }
         ]}
       ]},
-      { label: "Books and Resources I Like", href: "pages/books-and-resources.html", weight: 2 },
-      { label: "Cool Work at MIT", href: "pages/cool-work-at-mit.html", children: [
+      { label: "Resources", href: "pages/books-and-resources.html", weight: 2 },
+      { label: "College Work", href: "pages/cool-work-at-mit.html", children: [
         { label: "MEng Thesis", href: "pages/meng-thesis.html", weight: 0.85 },
         { label: "6.S894", href: "pages/6s894.html", children: [
           { label: "H100 Matmul", href: "pages/h100-matmul.html", weight: 0.85 }
