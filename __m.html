@@ -1,5 +1,0 @@
-<iframe id="f" src="/index.html" width="1200" height="620" style="border:0"></iframe><pre id="out">x</pre>
-<script>document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
-var hero=d.getElementById('hero').getBoundingClientRect(),h1=d.querySelector('.hero-text h1').getBoundingClientRect();
-document.getElementById('out').textContent='band '+Math.round(hero.left)+'-'+Math.round(hero.right)+' centre='+Math.round(hero.left+hero.width/2)
-+' | MAYA centre='+Math.round(h1.left+h1.width/2)+' (off by '+Math.round(h1.left+h1.width/2-(hero.left+hero.width/2))+')';},500);};</script>
