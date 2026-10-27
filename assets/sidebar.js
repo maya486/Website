@@ -247,8 +247,8 @@
   /* Each interior page gets a thin band in its own flamegraph colour: one
    * flat colour that breaks up into the page background along the bottom. */
   var BAND_CELL = 18;
-  var BAND_FILL = 0.78;     // solid colour down to here, then it drops off
-  var BAND_BLEED = 0.16;    // how far the background specks reach back up into it
+  var BAND_FILL = 0.62;     // solid colour down to here, then it drops off
+  var BAND_DRIP = 0.16;     // per-column variation, so the colour runs down in drips
 
   function mulberry32(a) {
     return function () {
@@ -259,7 +259,13 @@
     };
   }
 
-  function paintBand(art, box, color) {
+  function seedFrom(label) {
+    var h = 2166136261;
+    for (var i = 0; i < label.length; i++) { h ^= label.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h;
+  }
+
+  function paintBand(art, box, color, seed) {
     var sidebar = document.getElementById("sidebar");
     var reserve = sidebar ? sidebar.offsetWidth : 0;
     var cols = Math.ceil((box.clientWidth + reserve) / BAND_CELL);
@@ -267,18 +273,34 @@
     if (!cols || !rows) return;
 
     var fill = rgb(color);
-    var rand = mulberry32(7919);
+    var rand = mulberry32(seed || 7919);
+
+    // the solid part has to run past the bottom of the title, so it backs the
+    // text completely however many lines it wraps to
+    var title = box.querySelector("h1");
+    var solid = BAND_FILL;
+    if (title && box.clientHeight) {
+      solid = (title.offsetTop + title.offsetHeight + 14) / box.clientHeight;
+      solid = Math.max(0.35, Math.min(0.9, solid));
+    }
+
+    // each column gets its own reach, so the edge breaks into drips rather
+    // than an even scatter
+    var drip = [];
+    for (var c = 0; c < cols; c++) drip.push(rand() * BAND_DRIP);
+
     var out = [];
     for (var y = 0; y < rows; y++) {
-      var t = rows > 1 ? y / (rows - 1) : 0;
+      var t = box.clientHeight ? (y * BAND_CELL) / box.clientHeight : 0;
       for (var x = 0; x < cols; x++) {
         var on = true;
-        // the scatter starts above the solid edge, so a few background squares
-        // bleed up into the colour just as the colour bleeds down into the page
-        var start = BAND_FILL - BAND_BLEED;
-        if (t > start) {
-          var f = (t - start) / (1 - start);
-          on = rand() < Math.pow(1 - f, 2.4) * 0.99;
+        // the scatter starts well above the solid edge and runs well past it,
+        // so colour and background overlap through a wide, uneven zone
+        var start = solid;
+        var tt = t - drip[x];
+        if (tt > start) {
+          var f = Math.max(0, Math.min(1, (tt - start) / Math.max(0.01, 0.90 - start)));
+          on = rand() < Math.pow(1 - f, 1.5) * 0.99;
         }
         out.push(on ? '<i style="background:' + fill + '"></i>' : "<i></i>");
       }
@@ -306,7 +328,7 @@
     h1.parentNode.insertBefore(band, h1);
     band.appendChild(art);
     band.appendChild(h1);
-    paintBand(art, band, color);
+    paintBand(art, band, color, seedFrom(trail[trail.length - 1].label));
   }
 
   function build() {
@@ -342,8 +364,10 @@
       bandTimer = setTimeout(function () {
         var band = document.querySelector(".page-band");
         var trail = pathTo(currentPage(), TREE, []);
-        if (band && trail) paintBand(band.querySelector(".band-art"), band,
-                                     COLORS[trail[trail.length - 1].label]);
+        if (band && trail) {
+          var lbl = trail[trail.length - 1].label;
+          paintBand(band.querySelector(".band-art"), band, COLORS[lbl], seedFrom(lbl));
+        }
       }, 120);
     });
 

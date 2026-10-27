@@ -98,7 +98,7 @@ body.no-crumb #content { padding-top: 52px; }
 #content > p, #content > ul, #content > ol,
 #content > h1, #content > h2, #content > h3, #content > pre { max-width: max(640px, var(--prose)); }
 #content h1 {
-  margin-top: 0; font-size: 2rem;
+  margin-top: 0; font-size: 3.1rem;
   font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 400; letter-spacing: 0.01em;
 }
@@ -225,9 +225,10 @@ body.no-crumb #content { padding-top: 52px; }
 /* a thin monochrome version of the home hero, tinted with the page's own
    flamegraph colour; built by sidebar.js */
 #content .page-band {
+  /* height follows the title, so a title that wraps gets a taller band */
   position: relative;
-  height: 150px;
   margin: -32px -40px 30px;
+  padding: 46px 40px 112px;
   overflow: hidden;
 }
 #content .band-art {
@@ -237,10 +238,10 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content .band-art i { display: block; }
 #content .page-band h1 {
-  position: absolute; left: 0; right: 0; top: 42%;
-  transform: translateY(-50%) translateX(0.03em);
+  position: relative; z-index: 1;
+  transform: translateX(0.03em);
   margin: 0; max-width: none; text-align: center;
-  text-indent: 0.01em; white-space: nowrap;
+  text-indent: 0.01em; line-height: 1.18;
 }
 @media (max-width: 700px) {
   #content .page-band { margin-left: -20px; margin-right: -20px; }
