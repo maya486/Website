@@ -22,7 +22,7 @@
       <p><a href="https://highload.fun/challenges/compute/count_uint8/solve/CPP">The challenge</a> is to count the number of bytes equal to 127 from a stream of 250,000,000 uint8s as fast as possible.</p>
 
       <h2>The Solution</h2>
-      <p>The base algorithm is quite simple. It processes 32 uint8s at a time, reading the data with an aligned load, cmpeq to a vector of all 127s and then adding the mask to an accumulator (a mask lane looks like 0xFF=-1 so the accumulator grows negatively, but that can just be flipped at the end of the algorithm).</p>
+      <p>The base algorithm is quite simple. It processes 32 uint8s at a time, reading the data with an aligned load, cmpeq to a vector of all 127s, and then adding the mask to an accumulator (a mask lane looks like 0xFF=-1 so the accumulator grows negatively, but that can just be flipped at the end of the algorithm).</p>
       <p>In terms of further optimizations, it is mainly messing around with tuning various knobs. I did things like software prefetching, processing 64 bytes at a time, and widening from the accumulator from an 8 bit lane vector to 16 bit lane vectors every BATCH_SIZE iterations and then 16 bit lane vectors to a final uint64 every BIG_BATCH_SIZE*BATCH_SIZE iterations.</p>
       <p>Getting more ILP through having multiple pointers walk the stream at once is also very important. It is best to have them all be decently close together, a BLOCK_SIZE apart, and then when they get to the end of their section the whole group moves forward to the next NUM_WALKERS*BLOCKS_SIZE section. This, as opposed to something like splitting the entire stream into NUM_WALKERS huge chunks, is better for L2/L3 reuse and hardware prefetching.</p>
 
