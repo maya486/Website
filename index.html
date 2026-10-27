@@ -4,26 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Home · Maya Rebholz</title>
-<link rel="stylesheet" href="assets/style.css?v=21">
+<link rel="stylesheet" href="assets/style.css?v=25">
 </head>
 <body data-root="">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="assets/sidebar.js?v=21"></script>
+  <script src="assets/sidebar.js?v=25"></script>
+  <script src="assets/hero.js?v=5" defer></script>
   <div id="main">
     <div id="topbar">
       <span class="crumb">Home</span>
     </div>
     <main id="content">
-                    <p>Hi, I&rsquo;m Maya.</p>
+      <div class="hero" id="hero">
+        <div class="hero-art" aria-hidden="true"></div>
+        <div class="hero-text">
+          <h1>MAYA</h1>
+          <p>Software Performance Engineering</p>
+        </div>
+      </div>
+
+                    <!--<p>Hi, I&rsquo;m Maya.</p>-->
                     <p>I love learning about performance engineering for both CPUs and GPUs plus other low level topics like OS&rsquo;s and compilers. You can check out</p>
                     <ul class="sections">
                       <li><a href="pages/personal-projects.html">Personal Projects</a> &mdash; Mainly performance engineering problems I've solved for hands-on experience</li>
                       <li><a href="pages/cool-work-at-mit.html">College Work</a> &mdash; Classes I would recommend and my research work</li>
                       <li><a href="pages/books-and-resources.html">Resources</a> &mdash; Books, websites, and talks I've found helpful and/or interesting</li>
                     </ul>
-                    <p>Especially now that I am finished with formal education I want to make sure that I keep deeply exploring computer science and building technical projects. This website is meant to record my efforts in this as well as hopefully be interesting to someone with similar passions.</p>
+                    <!--<p>Especially now that I am finished with formal education I want to make sure that I keep deeply exploring computer science and building technical projects. This website is meant to record my efforts in this as well as hopefully be interesting to someone with similar passions.</p>-->
     </main>
   </div>
 </div>

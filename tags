@@ -4,7 +4,12 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+BAND_SPAN	assets/hero.js	/^  var BAND_SPAN = 0.80;     \/\/ bands fill the top 80%, the rest fades out$/;"	v
+CELL	assets/hero.js	/^  var CELL = 22;            \/\/ square size in px$/;"	v
+EDGE_BLEED	assets/hero.js	/^  var EDGE_BLEED = 0.42;    \/\/ chance a square at a band edge takes its neighbour$/;"	v
 MIN_DIFF	assets/sidebar.js	/^  var MIN_DIFF = 90;        \/\/ smallest acceptable distance between neighbours$/;"	v
+SPECKLE	assets/hero.js	/^  var SPECKLE = 0.05;       \/\/ chance any square takes a neighbouring band$/;"	v
+build	assets/hero.js	/^  function build() {$/;"	f
 build	assets/sidebar.js	/^  function build() {$/;"	f
 build.apply	assets/sidebar.js	/^    function apply(closed) {$/;"	f
 canSwap	assets/sidebar.js	/^  var canSwap = \/^https?:$\/.test(location.protocol) && "fetch" in window && "pushState" in history;$/;"	v
@@ -17,12 +22,15 @@ frameColor	assets/sidebar.js	/^  function frameColor(label) {$/;"	f
 hashColor	assets/sidebar.js	/^  function hashColor(label, salt) {$/;"	f
 href	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 label	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
+mulberry32	assets/hero.js	/^  function mulberry32(a) {$/;"	f
 onNavClick	assets/sidebar.js	/^  function onNavClick(e) {$/;"	f
 pathTo	assets/sidebar.js	/^  function pathTo(page, node, trail) {$/;"	f
 pickColor	assets/sidebar.js	/^  function pickColor(label, neighbours) {$/;"	f
 render	assets/sidebar.js	/^  function render(node, depth, root, current, parentColor, ownColor) {$/;"	f
 renderCrumb	assets/sidebar.js	/^  function renderCrumb(page, root) {$/;"	f
 rgb	assets/sidebar.js	/^  function rgb(c) { return "rgb(" + c.r + "," + c.g + "," + c.b + ")"; }$/;"	f
+schedule	assets/hero.js	/^  function schedule() { clearTimeout(timer); timer = setTimeout(build, 120); }$/;"	f
 setActive	assets/sidebar.js	/^  function setActive(page) {$/;"	f
 swapTo	assets/sidebar.js	/^  function swapTo(url, push) {$/;"	f
+timer	assets/hero.js	/^  var timer = null;$/;"	v
 weight	assets/sidebar.js	/^  function weight(node) {$/;"	f

@@ -210,6 +210,7 @@
       setActive(page);
       renderCrumb(page, newRoot);
       decorateLinks();
+      document.dispatchEvent(new CustomEvent("content:swapped"));
       window.scrollTo(0, 0);
     });
   }

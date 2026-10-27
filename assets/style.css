@@ -163,3 +163,38 @@ body.no-crumb #content { padding-top: 52px; }
   #sidebar { position: fixed; left: 0; top: 0; z-index: 10; box-shadow: 0 0 24px rgba(0,0,0,.15); }
   body.sidebar-closed #sidebar { box-shadow: none; }
 }
+
+/* ---------- home page hero ---------- */
+/* full-bleed band across the top of the content area: a grid of solid colour
+   squares (built by hero.js) with the name laid over it */
+#content .hero {
+  position: relative;
+  height: 50vh; min-height: 320px;
+  margin: -52px -40px 28px;
+  overflow: hidden;
+}
+#content .hero-art {
+  position: absolute; inset: 0; margin: 0; padding: 0;
+  display: grid; justify-content: start; align-content: start;
+  pointer-events: none;
+  overflow: hidden; background: none; border: 0; border-radius: 0;
+}
+#content .hero-art i { display: block; }
+#content .hero-text {
+  position: absolute; left: 0; right: 0; top: 50%;
+  transform: translateY(-50%);
+  text-align: center; max-width: none;
+}
+#content .hero-text h1 {
+  margin: 0; color: #000;
+  font-size: clamp(52px, 9vw, 124px); line-height: 0.95;
+  letter-spacing: 0.02em; max-width: none;
+}
+#content .hero-text p {
+  margin: 12px 0 0; max-width: none; color: #000;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(13px, 1.5vw, 21px); font-weight: 600; letter-spacing: 0.02em;
+}
+@media (max-width: 700px) {
+  #content .hero { margin-left: -20px; margin-right: -20px; }
+}
