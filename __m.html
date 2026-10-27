@@ -1,0 +1,4 @@
+<iframe id="f" src="/index.html" width="1200" height="700"></iframe><pre id="out">x</pre>
+<script>document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
+var h=d.getElementById('hero').getBoundingClientRect(),a=d.querySelector('.hero-text h1').getBoundingClientRect(),p=d.querySelector('.hero-text p').getBoundingClientRect();
+document.getElementById('out').textContent='bands end '+Math.round(h.top+h.height*0.8)+' | MAYA '+Math.round(a.top)+'-'+Math.round(a.bottom)+' | subtitle '+Math.round(p.top)+'-'+Math.round(p.bottom);},500);};</script>

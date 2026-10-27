@@ -1,4 +1,12 @@
 /* ---------- base ---------- */
+/* Game Paused (demo) - used for page titles and the home hero.
+   Free for personal use; a commercial licence is sold by the foundry. */
+@font-face {
+  font-family: "Game Paused";
+  src: url("fonts/game-paused-demo.otf") format("opentype");
+  font-display: swap;
+}
+
 :root {
   --bg: #fbfaf7;
   --fg: #1e1e1e;
@@ -89,7 +97,11 @@ body.no-crumb #content { padding-top: 52px; }
 #content { padding: 32px 40px 80px; }
 #content > p, #content > ul, #content > ol,
 #content > h1, #content > h2, #content > h3, #content > pre { max-width: max(640px, var(--prose)); }
-#content h1 { margin-top: 0; font-size: 2rem; }
+#content h1 {
+  margin-top: 0; font-size: 2rem;
+  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 400; letter-spacing: 0.01em;
+}
 #content .portrait {
   display: block; width: 320px; max-width: 100%;
   border: 1px solid var(--border); border-radius: 6px; margin: 0 0 20px;
@@ -181,19 +193,24 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content .hero-art i { display: block; }
 #content .hero-text {
-  position: absolute; left: 0; right: 0; top: 50%;
+  position: absolute; left: 0; right: 0; top: 46%;
   transform: translateY(-50%);
   text-align: center; max-width: none;
 }
 #content .hero-text h1 {
   margin: 0; color: #000;
-  font-size: clamp(52px, 9vw, 124px); line-height: 0.95;
-  letter-spacing: 0.02em; max-width: none;
+  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 400;
+  font-size: clamp(72px, 16vw, 260px); line-height: 0.86;
+  letter-spacing: 0.04em; max-width: none;
 }
 #content .hero-text p {
-  margin: 12px 0 0; max-width: none; color: #000;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: clamp(13px, 1.5vw, 21px); font-weight: 600; letter-spacing: 0.02em;
+  /* nudged up under the name; `position` keeps the name itself in place */
+  margin: 0; position: relative; top: -0.7em;
+  max-width: none; color: #000;
+  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(14px, 2.1vw, 30px); font-weight: 400; letter-spacing: 0.06em;
+  line-height: 1;
 }
 @media (max-width: 700px) {
   #content .hero { margin-left: -20px; margin-right: -20px; }
