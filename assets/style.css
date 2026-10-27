@@ -1,9 +1,9 @@
 /* ---------- base ---------- */
-/* Game Paused (demo) - used for page titles and the home hero.
-   Free for personal use; a commercial licence is sold by the foundry. */
+/* Pixeloid Sans Bold - page titles and the home hero.
+   SIL Open Font License; covers letters, digits and punctuation. */
 @font-face {
-  font-family: "Game Paused";
-  src: url("fonts/game-paused-demo.otf") format("opentype");
+  font-family: "Pixeloid";
+  src: url("fonts/pixeloid-sans-bold.otf") format("opentype");
   font-display: swap;
 }
 
@@ -99,7 +99,7 @@ body.no-crumb #content { padding-top: 52px; }
 #content > h1, #content > h2, #content > h3, #content > pre { max-width: max(640px, var(--prose)); }
 #content h1 {
   margin-top: 0; font-size: 2rem;
-  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 400; letter-spacing: 0.01em;
 }
 #content .portrait {
@@ -193,22 +193,23 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content .hero-art i { display: block; }
 #content .hero-text {
-  position: absolute; left: 0; right: 0; top: 46%;
+  /* centred between the edges of the colour band */
+  position: absolute; left: 0; right: 0; top: 45%;
   transform: translateY(-50%);
-  text-align: center; max-width: none;
+  text-align: center; max-width: none; white-space: nowrap;
 }
 #content .hero-text h1 {
   margin: 0; color: #000;
-  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 400;
   font-size: clamp(72px, 16vw, 260px); line-height: 0.86;
   letter-spacing: 0.04em; max-width: none;
 }
 #content .hero-text p {
   /* nudged up under the name; `position` keeps the name itself in place */
-  margin: 0; position: relative; top: -0.7em;
+  margin: 0; position: relative; top: -0.2625em;
   max-width: none; color: #000;
-  font-family: "Game Paused", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: clamp(14px, 2.1vw, 30px); font-weight: 400; letter-spacing: 0.06em;
   line-height: 1;
 }
