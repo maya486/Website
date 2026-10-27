@@ -292,6 +292,9 @@
     var out = [];
     for (var y = 0; y < rows; y++) {
       var t = box.clientHeight ? (y * BAND_CELL) / box.clientHeight : 0;
+      // a square whose bottom would fall past the band is left empty, so a
+      // deep drip can never be sliced in half by the edge
+      var fits = (y + 1) * BAND_CELL <= box.clientHeight;
       for (var x = 0; x < cols; x++) {
         var on = true;
         // the scatter starts well above the solid edge and runs well past it,
@@ -302,7 +305,7 @@
           var f = Math.max(0, Math.min(1, (tt - start) / Math.max(0.01, 0.90 - start)));
           on = rand() < Math.pow(1 - f, 1.5) * 0.99;
         }
-        out.push(on ? '<i style="background:' + fill + '"></i>' : "<i></i>");
+        out.push(on && fits ? '<i style="background:' + fill + '"></i>' : "<i></i>");
       }
     }
     art.style.gridTemplateColumns = "repeat(" + cols + ", " + BAND_CELL + "px)";
