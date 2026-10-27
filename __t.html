@@ -1,0 +1,14 @@
+<iframe id="f" src="/index.html" width="900" height="600"></iframe><pre id="out">pending</pre>
+<script>
+document.getElementById('f').onload=function(){var d=this.contentDocument,w=this.contentWindow;setTimeout(function(){
+ var a='home: topbar hidden='+(getComputedStyle(d.getElementById('topbar')).display==='none');
+ d.querySelector('#content a.page-chip').dispatchEvent(new w.MouseEvent('click',{bubbles:true,cancelable:true,button:0}));
+ setTimeout(function(){
+  var b='after nav to '+w.location.pathname+': topbar hidden='+(getComputedStyle(d.getElementById('topbar')).display==='none')
+   +' crumb='+Array.from(d.querySelectorAll('.crumb-link')).map(function(x){return x.textContent;}).join(' / ');
+  // go back to home
+  w.history.back();
+  setTimeout(function(){
+   var c='back to '+w.location.pathname+': topbar hidden='+(getComputedStyle(d.getElementById('topbar')).display==='none');
+   document.getElementById('out').textContent=[a,b,c].join('\n');},700);},700);},400);};
+</script>

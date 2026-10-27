@@ -80,6 +80,9 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
 #toggle:hover { background: #f1ede4; }
 /* when the sidebar is hidden the button sits over the top bar; make room for it */
 body.sidebar-closed #topbar { padding-left: 60px; }
+/* the home page has no breadcrumb, so it has no top bar either */
+body.no-crumb #topbar { display: none; }
+body.no-crumb #content { padding-top: 52px; }
 /* Prose takes ~90% of the content width and grows with the window, up to a
    line length that stays readable. Figures may use the full width. */
 :root { --prose: 90%; }

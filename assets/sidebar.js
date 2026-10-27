@@ -121,6 +121,9 @@
     if (!el) return;
     var trail = pathTo(page, TREE, []);
     if (!trail) return;
+    trail = trail.slice(1);                 // the root is implied, so drop it
+    // the home page has no trail left: hide the bar entirely
+    document.body.classList.toggle("no-crumb", trail.length === 0);
     el.textContent = "";
     trail.forEach(function (node, i) {
       if (i) {
