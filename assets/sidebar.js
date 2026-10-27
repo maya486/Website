@@ -210,6 +210,7 @@
       setActive(page);
       renderCrumb(page, newRoot);
       decorateLinks();
+      buildBanner(page, newRoot);
       document.dispatchEvent(new CustomEvent("content:swapped"));
       window.scrollTo(0, 0);
     });
@@ -243,6 +244,71 @@
     flame.style.setProperty("--leaf-h", Math.max(base, Math.floor(avail / total)) + "px");
   }
 
+  /* Each interior page gets a thin band in its own flamegraph colour: one
+   * flat colour that breaks up into the page background along the bottom. */
+  var BAND_CELL = 18;
+  var BAND_FILL = 0.78;     // solid colour down to here, then it drops off
+  var BAND_BLEED = 0.16;    // how far the background specks reach back up into it
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function paintBand(art, box, color) {
+    var sidebar = document.getElementById("sidebar");
+    var reserve = sidebar ? sidebar.offsetWidth : 0;
+    var cols = Math.ceil((box.clientWidth + reserve) / BAND_CELL);
+    var rows = Math.ceil(box.clientHeight / BAND_CELL);
+    if (!cols || !rows) return;
+
+    var fill = rgb(color);
+    var rand = mulberry32(7919);
+    var out = [];
+    for (var y = 0; y < rows; y++) {
+      var t = rows > 1 ? y / (rows - 1) : 0;
+      for (var x = 0; x < cols; x++) {
+        var on = true;
+        // the scatter starts above the solid edge, so a few background squares
+        // bleed up into the colour just as the colour bleeds down into the page
+        var start = BAND_FILL - BAND_BLEED;
+        if (t > start) {
+          var f = (t - start) / (1 - start);
+          on = rand() < Math.pow(1 - f, 2.4) * 0.99;
+        }
+        out.push(on ? '<i style="background:' + fill + '"></i>' : "<i></i>");
+      }
+    }
+    art.style.gridTemplateColumns = "repeat(" + cols + ", " + BAND_CELL + "px)";
+    art.style.gridAutoRows = BAND_CELL + "px";
+    art.innerHTML = out.join("");
+  }
+
+  function buildBanner(page, root) {
+    var content = document.getElementById("content");
+    if (!content || content.querySelector(".hero")) return;      // home has its own
+    var h1 = content.querySelector("h1");
+    if (!h1 || h1.closest(".page-band")) return;
+    var trail = pathTo(page, TREE, []);
+    if (!trail) return;
+    var color = COLORS[trail[trail.length - 1].label];
+    if (!color) return;
+
+    var band = document.createElement("div");
+    band.className = "page-band";
+    var art = document.createElement("div");
+    art.className = "band-art";
+    art.setAttribute("aria-hidden", "true");
+    h1.parentNode.insertBefore(band, h1);
+    band.appendChild(art);
+    band.appendChild(h1);
+    paintBand(art, band, color);
+  }
+
   function build() {
     var root = document.body.getAttribute("data-root") || "";
     var sidebar = document.getElementById("sidebar");
@@ -260,6 +326,7 @@
     if (content) content.addEventListener("click", onNavClick);
     renderCrumb(currentPage(), root);
     decorateLinks();
+    buildBanner(currentPage(), root);
     if (canSwap) {
       history.replaceState({ url: location.href }, "", location.href);
       window.addEventListener("popstate", function () {
@@ -269,6 +336,16 @@
 
     fitHeight();
     window.addEventListener("resize", fitHeight);
+    var bandTimer = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(bandTimer);
+      bandTimer = setTimeout(function () {
+        var band = document.querySelector(".page-band");
+        var trail = pathTo(currentPage(), TREE, []);
+        if (band && trail) paintBand(band.querySelector(".band-art"), band,
+                                     COLORS[trail[trail.length - 1].label]);
+      }, 120);
+    });
 
     // no slide animation on the initial paint
     document.body.classList.add("preload");

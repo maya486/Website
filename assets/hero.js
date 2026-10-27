@@ -13,7 +13,8 @@
     "rgb(250, 226, 26)"   // pale yellow
   ];
   var CELL = 22;            // square size in px
-  var BAND_SPAN = 0.80;     // bands fill the top 80%, the rest fades out
+  var BAND_SPAN = 0.94;     // bands fill the top 94%, the rest fades out
+  var BLEED_UP = 0.12;      // how far the background specks reach back up into them
   var EDGE_BLEED = 0.42;    // chance a square at a band edge takes its neighbour
   var SPECKLE = 0.05;       // chance any square takes a neighbouring band
 
@@ -48,21 +49,23 @@
       var t = rows > 1 ? y / (rows - 1) : 0;
       for (var x = 0; x < cols; x++) {
         var color = null;
+        var pos = (Math.min(t, BAND_SPAN) / BAND_SPAN) * BANDS.length;
+        var i = Math.min(last, Math.floor(pos));
+        var frac = pos - Math.floor(pos);
+        var j = i;
+        // squares near a boundary often take the colour on the other side
+        if (frac > 0.7 && i < last && rand() < EDGE_BLEED * ((frac - 0.7) / 0.3)) j = i + 1;
+        else if (frac < 0.3 && i > 0 && rand() < EDGE_BLEED * ((0.3 - frac) / 0.3)) j = i - 1;
+        else if (rand() < SPECKLE) j = Math.max(0, Math.min(last, i + (rand() < 0.5 ? -1 : 1)));
+        color = BANDS[j];
 
-        if (t <= BAND_SPAN) {
-          var pos = (t / BAND_SPAN) * BANDS.length;      // which band this row sits in
-          var i = Math.min(last, Math.floor(pos));
-          var frac = pos - Math.floor(pos);              // 0 at band top, 1 at band bottom
-          var j = i;
-          // squares near a boundary often take the colour on the other side
-          if (frac > 1 - 0.3 && i < last && rand() < EDGE_BLEED * ((frac - 0.7) / 0.3)) j = i + 1;
-          else if (frac < 0.3 && i > 0 && rand() < EDGE_BLEED * ((0.3 - frac) / 0.3)) j = i - 1;
-          else if (rand() < SPECKLE) j = Math.max(0, Math.min(last, i + (rand() < 0.5 ? -1 : 1)));
-          color = BANDS[j];
-        } else {
-          // past the last band: yellow squares thin out into the background
-          var f = (t - BAND_SPAN) / (1 - BAND_SPAN);     // 0 at the band edge, 1 at the bottom
-          if (rand() < Math.pow(1 - f, 2.1) * 0.85) color = BANDS[last - (rand() < 0.35 ? 1 : 0)];
+        // towards the bottom, squares start dropping out to the page background,
+        // and the scatter begins above the last band so background specks bleed
+        // up into the colour the same way the colour bleeds down
+        var start = BAND_SPAN - BLEED_UP;
+        if (t > start) {
+          var f = (t - start) / (1 - start);
+          if (rand() >= Math.pow(1 - f, 2.1) * 0.95) color = null;
         }
 
         out.push(color ? '<i style="background:' + color + '"></i>' : "<i></i>");

@@ -220,3 +220,28 @@ body.no-crumb #content { padding-top: 52px; }
 @media (max-width: 700px) {
   #content .hero { margin-left: -20px; margin-right: -20px; }
 }
+
+/* ---------- interior page title band ---------- */
+/* a thin monochrome version of the home hero, tinted with the page's own
+   flamegraph colour; built by sidebar.js */
+#content .page-band {
+  position: relative;
+  height: 150px;
+  margin: -32px -40px 30px;
+  overflow: hidden;
+}
+#content .band-art {
+  position: absolute; inset: 0; margin: 0; padding: 0;
+  display: grid; justify-content: start; align-content: start;
+  pointer-events: none; overflow: hidden;
+}
+#content .band-art i { display: block; }
+#content .page-band h1 {
+  position: absolute; left: 0; right: 0; top: 42%;
+  transform: translateY(-50%) translateX(0.03em);
+  margin: 0; max-width: none; text-align: center;
+  text-indent: 0.01em; white-space: nowrap;
+}
+@media (max-width: 700px) {
+  #content .page-band { margin-left: -20px; margin-right: -20px; }
+}
