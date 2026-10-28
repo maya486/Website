@@ -66,7 +66,11 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
   position: sticky; top: 0; z-index: 5;
 }
 #topbar .crumb { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
-#topbar .crumb-sep { color: var(--muted); }
+#topbar .crumb-sep {
+  color: var(--fg);
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px; line-height: 1;
+}
 /* each segment carries its flamegraph color */
 #topbar .crumb-link {
   font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;

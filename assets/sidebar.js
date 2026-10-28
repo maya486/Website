@@ -121,15 +121,14 @@
     if (!el) return;
     var trail = pathTo(page, TREE, []);
     if (!trail) return;
-    trail = trail.slice(1);                 // the root is implied, so drop it
     // the home page has no trail left: hide the bar entirely
-    document.body.classList.toggle("no-crumb", trail.length === 0);
+    document.body.classList.toggle("no-crumb", trail.length <= 1);  // home shows no bar
     el.textContent = "";
     trail.forEach(function (node, i) {
       if (i) {
         var sep = document.createElement("span");
         sep.className = "crumb-sep";
-        sep.textContent = "/";
+        sep.textContent = "\u25B6";
         el.appendChild(sep);
       }
       var a = document.createElement("a");
