@@ -62,16 +62,46 @@
     return Math.abs(a.g - b.g) + 0.5 * Math.abs(a.r - b.r) + 0.5 * Math.abs(a.b - b.b);
   }
 
+  /* The six bands of the home page gradient. Every frame snaps to whichever
+   * of these its generated colour is closest to, so the sidebar and the hero
+   * share one palette. A frame never takes the same band as its parent or as
+   * a sibling already placed; when the nearest is taken it falls to the next
+   * nearest. */
+  var PALETTE = [
+    { r: 206, g: 26,  b: 38 },
+    { r: 230, g: 62,  b: 30 },
+    { r: 240, g: 110, b: 24 },
+    { r: 245, g: 160, b: 20 },
+    { r: 247, g: 206, b: 20 },
+    { r: 250, g: 226, b: 26 }
+  ];
+
   function pickColor(label, neighbours) {
+    // the colour this frame would have had on its own
     var best = null, bestScore = -1;
     for (var salt = 0; salt < 200; salt++) {
       var c = hashColor(label, salt);
       var worst = Infinity;
       for (var i = 0; i < neighbours.length; i++) worst = Math.min(worst, dist(c, neighbours[i]));
-      if (worst >= MIN_DIFF) return c;
+      if (worst >= MIN_DIFF) { best = c; break; }
       if (worst > bestScore) { bestScore = worst; best = c; }
     }
-    return best;
+
+    // snap it to the nearest band the neighbours are not already using
+    var taken = [];
+    for (var n = 0; n < neighbours.length; n++) {
+      if (neighbours[n] && typeof neighbours[n].band === "number") taken.push(neighbours[n].band);
+    }
+    var order = [];
+    for (var p = 0; p < PALETTE.length; p++) order.push(p);
+    order.sort(function (a, b) { return dist(PALETTE[a], best) - dist(PALETTE[b], best); });
+    for (var k = 0; k < order.length; k++) {
+      if (taken.indexOf(order[k]) === -1) {
+        return { r: PALETTE[order[k]].r, g: PALETTE[order[k]].g, b: PALETTE[order[k]].b, band: order[k] };
+      }
+    }
+    var f = order[0];
+    return { r: PALETTE[f].r, g: PALETTE[f].g, b: PALETTE[f].b, band: f };
   }
 
   function rgb(c) { return "rgb(" + c.r + "," + c.g + "," + c.b + ")"; }
