@@ -113,10 +113,13 @@ body.no-crumb #topbar { display: none; }
 body.no-crumb #content { padding-top: 52px; }
 /* Prose takes ~90% of the content width and grows with the window, up to a
    line length that stays readable. Figures may use the full width. */
-:root { --prose: 90%; }
-#content { padding: 32px 40px 80px; }
+:root { --prose: 86%; }
+#content { padding: 32px 56px 88px; }
 #content > p, #content > ul, #content > ol,
-#content > h1, #content > h2, #content > h3, #content > pre { max-width: max(640px, var(--prose)); }
+#content > h1, #content > h2, #content > h3, #content > pre {
+  max-width: max(640px, var(--prose));
+  margin-left: auto; margin-right: auto;
+}
 #content h1 {
   margin-top: 0; font-size: 2.6rem;
   font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -129,8 +132,8 @@ body.no-crumb #content { padding-top: 52px; }
 /* photo, then the details underneath it */
 #content .profile-text p { margin: 0 0 8px; }
 #content .profile-text p:last-child { margin-bottom: 0; }
-#content h2 { font-size: 1.4rem; margin: 36px 0 10px; }
-#content h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+#content h2 { font-size: 1.4rem; margin: 36px auto 10px; }
+#content h3 { font-size: 1.1rem; margin: 26px auto 8px; }
 #content ul { padding-left: 22px; }
 #content .placeholder { color: var(--muted); font-style: italic; }
 #content pre {
@@ -140,7 +143,7 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content pre .comment { color: var(--muted); }
 #content figure { margin: 20px 0; }
-#content figure pre, #content figure figcaption { max-width: max(640px, var(--prose)); }
+#content figure pre, #content figure figcaption { max-width: max(640px, var(--prose)); margin-left: auto; margin-right: auto; }
 #content figure img { display: block; border: 1px solid var(--border); border-radius: 6px; }
 /* placeholder for a diagram that has not been added yet */
 #content .img-todo {
@@ -151,7 +154,7 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content figcaption { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 /* trace and screenshot images match the prose width; click for full size */
-#content figure.trace, #content figure.shot { max-width: max(640px, var(--prose)); }
+#content figure.trace, #content figure.shot { max-width: max(640px, var(--prose)); margin-left: auto; margin-right: auto; }
 #content figure.trace a, #content figure.shot a { display: block; line-height: 0; }
 #content figure.trace img, #content figure.shot img { width: 100%; background: #fff; }
 
@@ -206,7 +209,7 @@ body.no-crumb #content { padding-top: 52px; }
 #content .hero {
   position: relative;
   height: 50vh; min-height: 320px;
-  margin: -52px -40px 28px;
+  margin: -52px -56px 28px;
   overflow: hidden;
 }
 #content .hero-art {
@@ -251,8 +254,8 @@ body.no-crumb #content { padding-top: 52px; }
 #content .page-band {
   /* height follows the title, so a title that wraps gets a taller band */
   position: relative;
-  margin: -32px -40px 30px;
-  padding: 46px 40px 112px;
+  margin: -32px -56px 30px;
+  padding: 46px 56px 112px;
   overflow: hidden;
 }
 #content .band-art {

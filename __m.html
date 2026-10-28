@@ -1,9 +1,0 @@
-<iframe id="f" src="/pages/median.html" width="1200" height="700" style="border:0"></iframe><pre id="out">x</pre>
-<script>document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
- var rows=[];
- d.querySelectorAll('#flame .box').forEach(function(b){
-   var cs=getComputedStyle(b), r=b.getBoundingClientRect();
-   rows.push(b.textContent.replace(/\s+/g,' ')+' | border='+cs.borderTopWidth+' margin='+cs.margin+
-     ' | left='+r.left.toFixed(1)+' right='+r.right.toFixed(1)+' top='+r.top.toFixed(1)+' bottom='+r.bottom.toFixed(1));
- });
- document.getElementById('out').textContent=rows.join('\n');},500);};</script>
