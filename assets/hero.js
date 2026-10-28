@@ -15,7 +15,8 @@
   var CELL = 22;            // square size in px
   var BAND_SPAN = 0.94;     // bands fill the top 94%, the rest fades out
   var BLEED_UP = 0.12;      // how far the background specks reach back up into them
-  var EDGE_BLEED = 0.42;    // chance a square at a band edge takes its neighbour
+  var EDGE_BLEED = 0.48;    // chance a square at a band edge takes its neighbour
+  var EDGE_ZONE = 0.40;     // how much of a band counts as "near the edge"
   var SPECKLE = 0.05;       // chance any square takes a neighbouring band
 
   function mulberry32(a) {
@@ -54,8 +55,9 @@
         var frac = pos - Math.floor(pos);
         var j = i;
         // squares near a boundary often take the colour on the other side
-        if (frac > 0.7 && i < last && rand() < EDGE_BLEED * ((frac - 0.7) / 0.3)) j = i + 1;
-        else if (frac < 0.3 && i > 0 && rand() < EDGE_BLEED * ((0.3 - frac) / 0.3)) j = i - 1;
+        var hi = 1 - EDGE_ZONE;
+        if (frac > hi && i < last && rand() < EDGE_BLEED * ((frac - hi) / EDGE_ZONE)) j = i + 1;
+        else if (frac < EDGE_ZONE && i > 0 && rand() < EDGE_BLEED * ((EDGE_ZONE - frac) / EDGE_ZONE)) j = i - 1;
         else if (rand() < SPECKLE) j = Math.max(0, Math.min(last, i + (rand() < 0.5 ? -1 : 1)));
         color = BANDS[j];
 
