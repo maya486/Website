@@ -106,6 +106,9 @@ body.no-crumb #content { padding-top: 52px; }
   display: block; width: 320px; max-width: 100%;
   border: 1px solid var(--border); border-radius: 6px; margin: 0 0 20px;
 }
+/* photo, then the details underneath it */
+#content .profile-text p { margin: 0 0 8px; }
+#content .profile-text p:last-child { margin-bottom: 0; }
 #content h2 { font-size: 1.4rem; margin: 36px 0 10px; }
 #content h3 { font-size: 1.1rem; margin: 26px 0 8px; }
 #content ul { padding-left: 22px; }
