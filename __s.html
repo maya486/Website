@@ -1,2 +1,3 @@
-<iframe id="f" src="/pages/median.html" width="1150" height="620" style="border:0"></iframe>
-<script>document.getElementById('f').onload=function(){setTimeout(function(){this.contentDocument.getElementById('toggle').click();}.bind(this),300);};</script>
+<iframe id="f" src="/pages/parse-integers.html" width="900" height="400" style="border:0"></iframe><pre id="out">x</pre>
+<script>document.getElementById('f').onload=function(){var w=this.contentWindow,d=this.contentDocument;setTimeout(function(){
+ document.getElementById('out').textContent='scrollbar reserves '+(w.innerWidth-d.documentElement.clientWidth)+'px (14 = custom rules active)';},400);};</script>

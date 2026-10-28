@@ -39,7 +39,10 @@ body {
 a { color: #b8321f; }
 
 /* ---------- layout ---------- */
-#layout { display: flex; min-height: 100vh; }
+/* the window itself never scrolls: the page area owns the scrollbar, so it
+   starts below the breadcrumb bar instead of running the full height */
+html, body { height: 100%; overflow: hidden; }
+#layout { display: flex; height: 100vh; }
 
 #sidebar {
   width: var(--sidebar-w);
@@ -55,7 +58,7 @@ a { color: #b8321f; }
 body.sidebar-closed #sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
 body.preload #sidebar, body.preload #topbar { transition: none; }
 
-#main { flex: 1 1 auto; min-width: 0; }
+#main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; height: 100vh; }
 #topbar {
   display: flex; align-items: center; gap: 12px;
   min-height: 52px;
@@ -118,7 +121,7 @@ body.no-crumb #content { padding-top: 52px; }
 /* Prose takes ~90% of the content width and grows with the window, up to a
    line length that stays readable. Figures may use the full width. */
 :root { --prose: 86%; }
-#content { padding: 32px 56px 88px; }
+#content { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; padding: 32px 56px 88px; }
 #content > p, #content > ul, #content > ol,
 #content > h1, #content > h2, #content > h3, #content > pre {
   max-width: max(640px, var(--prose));
@@ -284,3 +287,27 @@ body.no-crumb #content { padding-top: 52px; }
 @media (max-width: 700px) {
   #content .page-band { margin-left: -20px; margin-right: -20px; }
 }
+
+/* ---------- scrollbars ---------- */
+/* square, solid black, no rounding - matches the hard edges elsewhere */
+/* Chrome ignores the ::-webkit-scrollbar rules when scrollbar-color is set,
+   so this is scoped to engines without those pseudo-elements (Firefox) */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-color: var(--fg) var(--bg); scrollbar-width: auto; }
+}
+*::-webkit-scrollbar { width: 14px; height: 14px; }
+*::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 2px solid var(--fg);
+}
+*::-webkit-scrollbar-track:horizontal {
+  border-left: 0; border-top: 2px solid var(--fg);
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--fg);
+  border-radius: 0;
+  border: 0;                     /* solid black, square, edge to edge */
+}
+*::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+*::-webkit-scrollbar-thumb:hover { background: #000; }
+*::-webkit-scrollbar-corner { background: var(--bg); }
