@@ -16,10 +16,11 @@ MIN_DIFF	assets/sidebar.js	/^  var MIN_DIFF = 90;        \/\/ smallest acceptabl
 SPECKLE	assets/hero.js	/^  var SPECKLE = 0.05;       \/\/ chance any square takes a neighbouring band$/;"	v
 build	assets/hero.js	/^  function build() {$/;"	f
 build	assets/sidebar.js	/^  function build() {$/;"	f
-build.apply	assets/sidebar.js	/^    function apply(closed) {$/;"	f
+build.apply	assets/sidebar.js	/^    function apply(closed, remember) {$/;"	f
 buildBanner	assets/sidebar.js	/^  function buildBanner(page, root) {$/;"	f
 canSwap	assets/sidebar.js	/^  var canSwap = \/^https?:$\/.test(location.protocol) && "fetch" in window && "pushState" in history;$/;"	v
 children	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
+closed	__t.html	/^function closed(){return f.contentDocument.body.classList.contains('sidebar-closed');}$/;"	f
 currentPage	assets/sidebar.js	/^  function currentPage() {$/;"	f
 decorateLinks	assets/sidebar.js	/^  function decorateLinks() {$/;"	f
 dist	assets/sidebar.js	/^  function dist(a, b) {$/;"	f
@@ -31,6 +32,7 @@ href	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	
 label	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 mulberry32	assets/hero.js	/^  function mulberry32(a) {$/;"	f
 mulberry32	assets/sidebar.js	/^  function mulberry32(a) {$/;"	f
+next	__t.html	/^function next(){$/;"	f
 onNavClick	assets/sidebar.js	/^  function onNavClick(e) {$/;"	f
 paintBand	assets/sidebar.js	/^  function paintBand(art, box, color, seed) {$/;"	f
 pathTo	assets/sidebar.js	/^  function pathTo(page, node, trail) {$/;"	f
@@ -41,7 +43,6 @@ rgb	assets/sidebar.js	/^  function rgb(c) { return "rgb(" + c.r + "," + c.g + ",
 schedule	assets/hero.js	/^  function schedule() { clearTimeout(timer); timer = setTimeout(build, 120); }$/;"	f
 seedFrom	assets/sidebar.js	/^  function seedFrom(label) {$/;"	f
 setActive	assets/sidebar.js	/^  function setActive(page) {$/;"	f
-state	__m.html	/^function state(tag){var d=f.contentDocument,sb=d.getElementById('sidebar');$/;"	f
 swapTo	assets/sidebar.js	/^  function swapTo(url, push) {$/;"	f
 timer	assets/hero.js	/^  var timer = null;$/;"	v
 weight	assets/sidebar.js	/^  function weight(node) {$/;"	f

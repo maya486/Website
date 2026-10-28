@@ -417,7 +417,7 @@
     // and out underneath it; only its label changes. Default open, remembered.
     var KEY = "sidebar-closed";
     var toggle = document.getElementById("toggle");
-    function apply(closed) {
+    function apply(closed, remember) {
       document.body.classList.toggle("sidebar-closed", closed);
       if (toggle) {
         toggle.setAttribute("aria-expanded", String(!closed));
@@ -425,11 +425,17 @@
         toggle.title = closed ? "Show sidebar" : "Hide sidebar";
         toggle.textContent = closed ? "\u25B6" : "\u25C0";
       }
-      try { localStorage.setItem(KEY, closed ? "1" : "0"); } catch (e) {}
+      if (remember !== false) {
+        try { localStorage.setItem(KEY, closed ? "1" : "0"); } catch (e) {}
+      }
     }
+    // The home page always loads collapsed, so the gradient gets the full
+    // width; opening it there is not remembered. Every other page restores
+    // whatever state was last chosen.
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
-    apply(saved === null ? currentPage() === "index.html" : saved === "1");
+    if (currentPage() === "index.html") apply(true, false);
+    else apply(saved === "1");
     if (toggle) toggle.addEventListener("click", function () {
       apply(!document.body.classList.contains("sidebar-closed"));
     });
