@@ -21,7 +21,7 @@
   --fg: #1e1e1e;
   --muted: #6b6b6b;
   --border: #e3dfd6;
-  --sidebar-w: 408px;
+  --sidebar-w: 374px;
   --col-w: 116px;
   --leaf-h-base: 52px;  /* minimum height of one weight unit */
   --leaf-h: var(--leaf-h-base);  /* grown by sidebar.js on tall screens */
