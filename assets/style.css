@@ -51,20 +51,17 @@ html, body { height: 100%; overflow: hidden; }
   background: #fff;
   /* a vertical scrollbar must never trigger a horizontal one */
   overflow-y: auto; overflow-x: hidden;
-  transition: margin-left .25s ease;
   position: sticky;
   top: 0;
   height: 100vh;
 }
 body.sidebar-closed #sidebar { margin-left: calc(-1 * var(--sidebar-w)); }
-body.preload #sidebar, body.preload #topbar { transition: none; }
 
 #main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; height: 100vh; }
 #topbar {
   display: flex; align-items: center; gap: 12px;
   min-height: 52px;
   padding: 10px 20px;
-  transition: padding-left .25s ease;
   border-bottom: 2px solid var(--fg);
   background: #fff;
   position: sticky; top: 0; z-index: 5;
@@ -105,7 +102,6 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
   display: flex; align-items: center; justify-content: center;
   border: 2px solid var(--fg); border-radius: 0;
   background: #fff; color: var(--fg); cursor: pointer;
-  transition: left .25s ease, transform .25s ease;
 }
 #toggle:hover { background: #f1ede4; }
 #toggle {
@@ -115,7 +111,6 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
 body.sidebar-closed #toggle {
   left: 0; transform: translate(0, -50%);
 }
-body.preload #toggle { transition: none; }
 /* the home page has no breadcrumb, so it has no top bar either */
 body.no-crumb #topbar { display: none; }
 body.no-crumb #content { padding-top: 52px; }
