@@ -1,0 +1,45 @@
+FONTS USED ON THIS SITE
+=======================
+
+Both fonts are self-hosted in assets/fonts/ rather than loaded from a CDN.
+
+
+1. Pixeloid Sans Bold
+---------------------
+Used for:     page titles, the home page name and tagline, the flamegraph
+              sidebar labels, breadcrumb chips, in-page link tags, the
+              sidebar toggle arrow
+File:         assets/fonts/pixeloid-sans-bold.otf
+Designer:     GGBotNet
+Source:       https://www.1001fonts.com/pixeloid-font.html
+License:      SIL Open Font License (OFL)
+Commercial:   Permitted
+Coverage:     1103 glyphs, including digits, punctuation, arrows and
+              block/triangle symbols
+
+
+2. Roboto Mono
+--------------
+Used for:     all body text, headings within pages, lists, links
+File:         assets/fonts/roboto-mono.woff2  (variable, weights 100-700,
+              latin subset)
+Designer:     Christian Robertson
+Source:       Google Fonts, https://fonts.google.com/specimen/Roboto+Mono
+License:      Apache License 2.0
+Commercial:   Permitted
+
+
+Fallbacks
+---------
+Where a face fails to load, the stylesheet falls back to the system
+monospace stack: ui-monospace, SFMono-Regular, Menlo, monospace.
+Code blocks and figure captions use that system stack directly; no
+third-party font is involved there.
+
+
+Notes
+-----
+An earlier draft of this site used "Game Paused Demo" (Dharma Type /
+dharmasstudio, free for personal use only). It was removed because the
+demo face contains no digits or punctuation, so course numbers such as
+6.1060 could not render. No file from it remains in this repository.
