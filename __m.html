@@ -1,7 +1,6 @@
 <iframe id="f" src="/pages/median.html" width="1000" height="600" style="border:0"></iframe><pre id="out">x</pre>
 <script>document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
- var de=d.documentElement, c=d.getElementById('content'), t=d.getElementById('topbar');
- document.getElementById('out').textContent=
-  'window scrolls: '+(de.scrollHeight>de.clientHeight)+'  (horizontally: '+(de.scrollWidth>de.clientWidth)+')'+
-  '\ncontent scrolls: '+(c.scrollHeight>c.clientHeight)+
-  '\ncontent box starts at y='+Math.round(c.getBoundingClientRect().top)+'  topbar height='+Math.round(t.getBoundingClientRect().height);},500);};</script>
+ var sb=d.getElementById('sidebar');
+ var boxes=[].map.call(d.querySelectorAll('#flame .frame > .box'),function(b){return b.getBoundingClientRect().right;});
+ document.getElementById('out').textContent='sidebar='+sb.offsetWidth+'  graph right edge='+Math.round(Math.max.apply(null,boxes))
+  +'  slack='+Math.round(sb.getBoundingClientRect().right-Math.max.apply(null,boxes));},500);};</script>
