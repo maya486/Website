@@ -213,7 +213,7 @@ body.no-crumb #content { padding-top: 52px; }
 }
 #content .hero-text p {
   /* nudged up under the name; `position` keeps the name itself in place */
-  margin: 0; position: relative; top: -0.2625em;
+  margin: 0; position: relative; top: -0.02em;
   max-width: none; color: #000;
   font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: clamp(14px, 2.1vw, 30px); font-weight: 400;
