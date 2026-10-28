@@ -270,7 +270,8 @@
     var avail = sidebar.clientHeight - (header ? header.offsetHeight : 0) - pad;
     var total = weight(TREE);
     if (!total || avail <= 0) return;
-    flame.style.setProperty("--leaf-h", Math.max(base, Math.floor(avail / total)) + "px");
+    // 1px of slack absorbs rounding, so the graph never overflows by a hair
+    flame.style.setProperty("--leaf-h", Math.max(base, Math.floor((avail - 1) / total)) + "px");
   }
 
   /* Each interior page gets a thin band in its own flamegraph colour: one

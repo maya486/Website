@@ -41,6 +41,7 @@ rgb	assets/sidebar.js	/^  function rgb(c) { return "rgb(" + c.r + "," + c.g + ",
 schedule	assets/hero.js	/^  function schedule() { clearTimeout(timer); timer = setTimeout(build, 120); }$/;"	f
 seedFrom	assets/sidebar.js	/^  function seedFrom(label) {$/;"	f
 setActive	assets/sidebar.js	/^  function setActive(page) {$/;"	f
+state	__m.html	/^function state(tag){var d=f.contentDocument,sb=d.getElementById('sidebar');$/;"	f
 swapTo	assets/sidebar.js	/^  function swapTo(url, push) {$/;"	f
 timer	assets/hero.js	/^  var timer = null;$/;"	v
 weight	assets/sidebar.js	/^  function weight(node) {$/;"	f

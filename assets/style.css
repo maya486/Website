@@ -23,7 +23,7 @@
   --border: #e3dfd6;
   --sidebar-w: 374px;
   --col-w: 112px;
-  --leaf-h-base: 52px;  /* minimum height of one weight unit */
+  --leaf-h-base: 44px;  /* minimum height of one weight unit */
   --leaf-h: var(--leaf-h-base);  /* grown by sidebar.js on tall screens */
   --gap: 0px;
   --flame-text: #000;
@@ -49,7 +49,8 @@ html, body { height: 100%; overflow: hidden; }
   flex: 0 0 var(--sidebar-w);
   border-right: 2px solid var(--fg);
   background: #fff;
-  overflow: auto;
+  /* a vertical scrollbar must never trigger a horizontal one */
+  overflow-y: auto; overflow-x: hidden;
   transition: margin-left .25s ease;
   position: sticky;
   top: 0;

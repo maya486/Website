@@ -1,6 +1,0 @@
-<iframe id="f" src="/pages/median.html" width="1000" height="600" style="border:0"></iframe><pre id="out">x</pre>
-<script>document.getElementById('f').onload=function(){var d=this.contentDocument;setTimeout(function(){
- var sb=d.getElementById('sidebar');
- var boxes=[].map.call(d.querySelectorAll('#flame .frame > .box'),function(b){return b.getBoundingClientRect().right;});
- document.getElementById('out').textContent='sidebar='+sb.offsetWidth+'  graph right edge='+Math.round(Math.max.apply(null,boxes))
-  +'  slack='+Math.round(sb.getBoundingClientRect().right-Math.max.apply(null,boxes));},500);};</script>
