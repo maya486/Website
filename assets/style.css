@@ -240,6 +240,13 @@ body.no-crumb #content { padding-top: 52px; }
   pointer-events: none; overflow: hidden;
 }
 #content .band-art i { display: block; }
+#content .page-band .page-sub {
+  position: relative; z-index: 1;
+  margin: 12px 0 0; max-width: none; text-align: center; color: #000;
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.3rem; letter-spacing: 0.04em; text-indent: 0.04em;
+  transform: translateX(0.04em);
+}
 #content .page-band h1 {
   position: relative; z-index: 1;
   transform: translateX(0.03em);

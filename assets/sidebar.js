@@ -277,7 +277,8 @@
 
     // the solid part has to run past the bottom of the title, so it backs the
     // text completely however many lines it wraps to
-    var title = box.querySelector("h1");
+    // the solid part must clear whatever sits on the band: title plus subtitle
+    var title = box.querySelector(".page-sub") || box.querySelector("h1");
     var solid = BAND_FILL;
     if (title && box.clientHeight) {
       solid = (title.offsetTop + title.offsetHeight + 14) / box.clientHeight;
@@ -328,9 +329,12 @@
     var art = document.createElement("div");
     art.className = "band-art";
     art.setAttribute("aria-hidden", "true");
+    var sub = h1.nextElementSibling;
+    if (!sub || !sub.classList.contains("page-sub")) sub = null;
     h1.parentNode.insertBefore(band, h1);
     band.appendChild(art);
     band.appendChild(h1);
+    if (sub) band.appendChild(sub);
     paintBand(art, band, color, seedFrom(trail[trail.length - 1].label));
   }
 

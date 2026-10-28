@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anthropic Performance Take-Home · Maya Rebholz</title>
-<link rel="stylesheet" href="../assets/style.css?v=55">
+<link rel="stylesheet" href="../assets/style.css?v=57">
 </head>
 <body data-root="../">
 <button id="toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide sidebar" title="Hide sidebar">&#9776;</button>
 <div id="layout">
   <aside id="sidebar"></aside>
-  <script src="../assets/sidebar.js?v=55"></script>
+  <script src="../assets/sidebar.js?v=57"></script>
   <script src="../assets/hero.js?v=8" defer></script>
   <div id="main">
     <div id="topbar">
@@ -18,6 +18,7 @@
     </div>
     <main id="content">
       <h1>Anthropic Performance Take-Home</h1>
+      <p class="page-sub">Beating the Hardest Performance Benchmark</p>
 
       <h2>Background</h2>
       <p>Anthropic released a modified version of the take home test it previously used on applicants: <a href="https://github.com/anthropics/original_performance_takehome/">original_performance_takehome</a>. The problem is essentially to output the least number of instructions possible to execute a given algorithm. Instead of other performance tasks which usually would have the programmer write the performant code directly like in C file, this problem has the programmer use Python to output a list of VLIW instructions that would themselves execute the logic of the problem.</p>
