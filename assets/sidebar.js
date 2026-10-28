@@ -18,7 +18,7 @@
       ]},
       { label: "Resources", href: "pages/books-and-resources.html", weight: 2 },
       { label: "College Work", href: "pages/cool-work-at-mit.html", children: [
-        { label: "MEng Thesis", href: "pages/meng-thesis.html", weight: 0.85 },
+        { label: "MEng\nThesis", href: "pages/meng-thesis.html", weight: 0.85 },
         { label: "6.S894", href: "pages/6s894.html", children: [
           { label: "H100 Matmul", href: "pages/h100-matmul.html", weight: 0.85 }
         ]},
