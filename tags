@@ -25,6 +25,7 @@ decorateLinks	assets/sidebar.js	/^  function decorateLinks() {$/;"	f
 dist	assets/sidebar.js	/^  function dist(a, b) {$/;"	f
 fitHeight	assets/sidebar.js	/^  function fitHeight() {$/;"	f
 frameColor	assets/sidebar.js	/^  function frameColor(label) {$/;"	f
+go	__t.html	/^function go(){ if(++done<2) return; setTimeout(function(){$/;"	f
 hashColor	assets/sidebar.js	/^  function hashColor(label, salt) {$/;"	f
 href	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p
 label	assets/sidebar.js	/^    label: "Home", href: "index.html", children: [$/;"	p

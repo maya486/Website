@@ -344,7 +344,6 @@
     if (!sidebar) return;
 
     sidebar.innerHTML =
-      '<header></header>' +
       '<nav id="flame" aria-label="Site navigation">' +
       '<div class="graph"></div></nav>';
     sidebar.querySelector(".graph").appendChild(render(TREE, 0, root, currentPage(), null, null));
@@ -394,12 +393,13 @@
         toggle.setAttribute("aria-expanded", String(!closed));
         toggle.setAttribute("aria-label", closed ? "Show sidebar" : "Hide sidebar");
         toggle.title = closed ? "Show sidebar" : "Hide sidebar";
+        toggle.textContent = closed ? "\u25B6" : "\u25C0";
       }
       try { localStorage.setItem(KEY, closed ? "1" : "0"); } catch (e) {}
     }
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
-    apply(saved === "1");
+    apply(saved === null ? currentPage() === "index.html" : saved === "1");
     if (toggle) toggle.addEventListener("click", function () {
       apply(!document.body.classList.contains("sidebar-closed"));
     });

@@ -78,16 +78,28 @@ body.preload #sidebar, body.preload #topbar { transition: none; }
   border: 1px solid rgba(0,0,0,.18);
 }
 #content a.page-chip:hover { filter: brightness(1.12); }
-/* the one toggle button: fixed in the corner, above the sidebar */
+/* the toggle: a handle on the divider between sidebar and page, pointing
+   left to close and right to open */
 #toggle {
-  position: fixed; top: 10px; left: 12px; z-index: 20;
-  font: inherit; font-size: 14px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--bg); color: var(--fg);
-  border-radius: 6px; padding: 4px 9px; line-height: 1.4;
+  position: fixed; top: 50%; left: var(--sidebar-w);
+  transform: translate(-50%, -50%);
+  z-index: 30; padding: 0;
+  width: 26px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: #fff; color: var(--fg); cursor: pointer;
+  transition: left .25s ease, transform .25s ease;
 }
 #toggle:hover { background: #f1ede4; }
-/* when the sidebar is hidden the button sits over the top bar; make room for it */
-body.sidebar-closed #topbar { padding-left: 60px; }
+#toggle {
+  font-family: "Pixeloid", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px; line-height: 1;
+}
+body.sidebar-closed #toggle {
+  left: 0; transform: translate(0, -50%);
+  border-left: 0; border-radius: 0 6px 6px 0;
+}
+body.preload #toggle { transition: none; }
 /* the home page has no breadcrumb, so it has no top bar either */
 body.no-crumb #topbar { display: none; }
 body.no-crumb #content { padding-top: 52px; }
@@ -135,13 +147,11 @@ body.no-crumb #content { padding-top: 52px; }
 #content figure.trace a, #content figure.shot a { display: block; line-height: 0; }
 #content figure.trace img, #content figure.shot img { width: 100%; background: #fff; }
 
-/* ---------- sidebar header ---------- */
-#sidebar header { height: 52px; } /* reserves space under the fixed toggle */
 
 /* ---------- flamegraph ---------- */
 #flame {
   display: flex;
-  padding: 6px 12px 16px;
+  padding: 10px 12px 14px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
   line-height: 1.25;
