@@ -130,6 +130,9 @@
       m[n.href.split("/").pop()] = n.label;
       (n.children || []).forEach(walk);
     })(TREE);
+    // files that were renamed: a cached page may still link to the old name
+    m["books-and-resources.html"] = "Resources";
+    m["cool-work-at-mit.html"] = "College Work";
     return m;
   })();
 
