@@ -20,5 +20,5 @@ When served over HTTP (for example `python3 -m http.server`), clicking a frame s
 
 These point at `#` and have a TODO comment beside them:
 
-- `pages/cool-work-at-mit.html` — the xv6 source
+- `pages/college-work.html` — the xv6 source
 - `pages/6-1100.html` — the group's final design document
