@@ -241,6 +241,9 @@
       decorateLinks();
       buildBanner(page, newRoot);
       document.dispatchEvent(new CustomEvent("content:swapped"));
+      // the page area owns the scrollbar now, so reset that box, not the window
+      var box = document.getElementById("content");
+      if (box) box.scrollTop = 0;
       window.scrollTo(0, 0);
     });
   }
